@@ -6,3 +6,9 @@ A small CLI tool to track your time written in Python.
 
 - Python 3
 - [tabulate](https://pypi.org/project/tabulate/)
+
+## Setup
+
+Run this command to create the SQLite database:  
+
+    $ ./tim.py init
