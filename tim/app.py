@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-import getopt
-import re
-import sys
-import sqlite3
-import time
 from datetime import datetime
 from os import path, remove, rename
 from tabulate import tabulate
+from typing import List
+import getopt
+import re
+import sqlite3
+import sys
+import time
 
 
-def main():
+def main() -> None:
     argv = sys.argv[1:]
 
     command = ''
@@ -39,7 +40,7 @@ def main():
     print_today()
 
 
-def new(title='', argv=[]):
+def new(title='', argv=[]) -> None:
     try:
         opts, _ = getopt.getopt(argv, 'r:', ['retro='])
     except getopt.GetoptError:
@@ -65,7 +66,7 @@ def new(title='', argv=[]):
     sys.exit(0)
 
 
-def list():
+def list() -> None:
     tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
     db = path.join(tim_dir, 'db', 'tim.sqlite')
     conn = sqlite3.connect(db)
@@ -99,7 +100,7 @@ def list():
     sys.exit(0)
 
 
-def group():
+def group() -> None:
     timestamps = print_today(True)
     timestamps = [(x[0], datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
                   for x in timestamps]
@@ -131,7 +132,7 @@ def group():
     sys.exit(0)
 
 
-def seconds_to_time(seconds):
+def seconds_to_time(seconds) -> str:
     seconds = seconds % (24 * 3600)
     hour = seconds // 3600
     seconds %= 3600
@@ -143,7 +144,7 @@ def seconds_to_time(seconds):
     return "%d:%02d" % (hour, minutes)
 
 
-def print_help(error=0):
+def print_help(error=0) -> None:
     print('test.py -n <title> \n'
           '\n'
           'Commands:\n'
@@ -154,7 +155,7 @@ def print_help(error=0):
     sys.exit(error)
 
 
-def print_today(print_index=False):
+def print_today(print_index=False) -> List:
     tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
     db = path.join(tim_dir, 'db', 'tim.sqlite')
     conn = sqlite3.connect(db)
@@ -175,7 +176,7 @@ def print_today(print_index=False):
     return timestamps
 
 
-def init():
+def init() -> None:
     tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
     db = path.join(tim_dir, 'db', 'tim.sqlite')
 
