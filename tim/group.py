@@ -2,7 +2,6 @@ from datetime import datetime
 from os import path
 import re
 import sqlite3
-import sys
 from tabulate import tabulate
 import time
 
@@ -58,6 +57,9 @@ class GroupCommand(AbstractCommand):
                           headers=['Time', 'Title']))
 
                     title = input('\nEnter a new title for these stamps: ')
-                    print(title)
 
-        sys.exit(0)
+                    for stamp in group_stamps:
+                        query = f'''UPDATE timestamps SET title = \'{title}\'
+                                    WHERE timestamp = {stamp[0]};'''
+                        cursor.execute(query)
+                    conn.commit()
