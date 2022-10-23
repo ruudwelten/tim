@@ -7,8 +7,8 @@ import time
 from tim.command import AbstractCommand
 
 
-class ListCommand(AbstractCommand):
-    """List today's timestmaps by default or a previous day with an offset."""
+class LogCommand(AbstractCommand):
+    """Log today's timestmaps by default or a previous day with an offset."""
 
     def run(self) -> None:
         print_index = False

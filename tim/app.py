@@ -5,7 +5,7 @@ from tim.command import AbstractCommand
 from tim.group import GroupCommand
 from tim.help import HelpCommand
 from tim.init import InitCommand
-from tim.list import ListCommand
+from tim.log import LogCommand
 from tim.new import NewCommand
 from tim.tally import TallyCommand
 
@@ -13,15 +13,15 @@ from tim.tally import TallyCommand
 def main() -> None:
     argv = sys.argv[1:]
 
-    command = 'list'
+    command = 'log'
     day_offset = 0
 
     if len(argv) > 0:
-        if argv[0] in ('group', 'help', 'init', 'list', 'new', 'tally'):
+        if argv[0] in ('group', 'help', 'init', 'log', 'new', 'tally'):
             command = argv[0]
             argv = argv[1:]
         else:
-            command = 'list'
+            command = 'log'
 
         if len(argv) > 0 and re.fullmatch(r'[-+][0-9]+', argv[0]):
             day_offset = int(argv[0])
@@ -33,8 +33,8 @@ def main() -> None:
         commandClass = HelpCommand(argv, day_offset)
     elif command == 'init':
         commandClass = InitCommand(argv, day_offset)
-    elif command == 'list':
-        commandClass = ListCommand(argv, day_offset)
+    elif command == 'log':
+        commandClass = LogCommand(argv, day_offset)
     elif command == 'new':
         commandClass = NewCommand(argv, day_offset)
     elif command == 'tally':
