@@ -46,7 +46,7 @@ class TallyCommand(AbstractCommand):
         print(tabulate([(x[1], self.seconds_to_time(x[2]))
                         for x in timestamps],
               headers=['Title', 'Duration'],
-              showindex='always'))
+              showindex=False))
 
     def seconds_to_time(self, seconds: int) -> str:
         seconds = seconds % (24 * 3600)
