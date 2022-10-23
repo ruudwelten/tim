@@ -1,4 +1,3 @@
-from datetime import datetime
 from os import path
 import sqlite3
 from tabulate import tabulate
@@ -30,17 +29,23 @@ class TallyCommand(AbstractCommand):
             next = current if i == len(timestamps) - 1 else timestamps[i + 1]
             timestamps[i] = (current + tuple([next[0] - current[0]]))
 
-        timestamps = [(
-                        datetime.fromtimestamp(x[0]).strftime('%H:%M'),
-                        x[1],
-                        self.seconds_to_time(x[2])
-                    ) for x in timestamps]
+        timestamps.sort(key=lambda x: x[1])
 
-        print(tabulate(timestamps, headers=['Time', 'Title', 'Duration'],
-              showindex='always'))
-        print('\n')
-        print(tabulate(sorted(timestamps, key=lambda x: x[1]),
-              headers=['Time', 'Title', 'Duration'],
+        duplicate_timestamps_to_remove = []
+        for i in range(1, len(timestamps)):
+            previous = timestamps[i - 1]
+            current = timestamps[i]
+            if (previous[1] == current[1]):
+                timestamps[i] = (current[0], current[1],
+                                 current[2] + previous[2])
+                duplicate_timestamps_to_remove.append(i - 1)
+
+        for index in duplicate_timestamps_to_remove:
+            del(timestamps[index])
+
+        print(tabulate([(x[1], self.seconds_to_time(x[2]))
+                        for x in timestamps],
+              headers=['Title', 'Duration'],
               showindex='always'))
 
     def seconds_to_time(self, seconds: int) -> str:
