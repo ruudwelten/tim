@@ -40,6 +40,7 @@ class TallyCommand(AbstractCommand):
                                  current[2] + previous[2])
                 duplicate_timestamps_to_remove.append(i - 1)
 
+        duplicate_timestamps_to_remove.sort(reverse=True)
         for index in duplicate_timestamps_to_remove:
             del(timestamps[index])
 
