@@ -1,7 +1,6 @@
 from os import path
 import sqlite3
 from tabulate import tabulate
-import time
 
 from tim.command import AbstractCommand
 
@@ -15,14 +14,12 @@ class TallyCommand(AbstractCommand):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        print('\033[1m\n\033[33mToday,',
-              time.strftime('%d-%m-%Y'),
-              '\033[0m\n')
+        print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
         timestamps = cursor.execute(
-            "SELECT timestamp, title FROM timestamps "
-            "WHERE timestamp >= strftime('%s', 'now', 'start of day') "
-            "ORDER BY timestamp ASC;").fetchall()
+            'SELECT timestamp, title FROM timestamps '
+            f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
+            'ORDER BY timestamp ASC;').fetchall()
 
         for i in range(0, len(timestamps)):
             current = timestamps[i]

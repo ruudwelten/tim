@@ -15,6 +15,5 @@ Run this command to create the SQLite database:
 
 ## To do:
 
-- Add ability to use commands for previous days
 - Create edit command to edit a specific entry
 - Create ammend command to edit latest entry
