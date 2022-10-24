@@ -16,24 +16,24 @@ class GroupCommand(AbstractCommand):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
-
-        timestamps = cursor.execute(
-            'SELECT timestamp, title FROM timestamps '
-            f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
-            'ORDER BY timestamp ASC;').fetchall()
-        timestamps_print = [
-            (datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
-            for x in timestamps]
-        print(tabulate(timestamps_print, headers=['Time', 'Title'],
-              showindex=True))
-
-        timestamps = [
-            (x[0], datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
-            for x in timestamps
-        ]
-
         while True:
+            print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
+
+            timestamps = cursor.execute(
+                'SELECT timestamp, title FROM timestamps '
+                f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
+                'ORDER BY timestamp ASC;').fetchall()
+            timestamps_print = [
+                (datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
+                for x in timestamps]
+            print(tabulate(timestamps_print, headers=['Time', 'Title'],
+                showindex=True))
+
+            timestamps = [
+                (x[0], datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
+                for x in timestamps
+            ]
+
             action = input('\nEnter the indeces to group (or q to quit): ')
             action = action.lower()
 
