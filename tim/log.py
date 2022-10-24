@@ -22,6 +22,16 @@ class LogCommand(AbstractCommand):
             'SELECT timestamp, title FROM timestamps '
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
+        if len(timestamps) == 0:
+            print('Oh no! Your log for this day looks empty ...\n'
+                  '\n'
+                  '\033[90m¯\\_(ツ)_/¯\033[0m\n'
+                  '\n'
+                  'To create a new timestamp run the following command:\n'
+                  '\n'
+                  '$ \033[1m\033[96mtim.py new [title]\033[0m')
+            return
+
         timestamps_print = [
             (datetime.fromtimestamp(x[0]).strftime('%H:%M'), x[1])
             for x in timestamps]
