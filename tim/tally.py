@@ -1,6 +1,6 @@
 from os import path
 import sqlite3
-from tabulate import tabulate
+from tabulate import tabulate, SEPARATING_LINE
 
 from tim.command import AbstractCommand
 
@@ -21,10 +21,13 @@ class TallyCommand(AbstractCommand):
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
 
+        total_time = 0
         for i in range(0, len(timestamps)):
             current = timestamps[i]
             next = current if i == len(timestamps) - 1 else timestamps[i + 1]
-            timestamps[i] = (current + tuple([next[0] - current[0]]))
+            time = next[0] - current[0]
+            timestamps[i] = (current + tuple([time]))
+            total_time += time
 
         timestamps.sort(key=lambda x: x[1])
 
@@ -41,8 +44,13 @@ class TallyCommand(AbstractCommand):
         for index in duplicate_timestamps_to_remove:
             del(timestamps[index])
 
-        print(tabulate([(x[1], self.seconds_to_time(x[2]))
-                        for x in timestamps],
+        timestamps_print = [(x[1], self.seconds_to_time(x[2]))
+                            for x in timestamps]
+        timestamps_print.append(SEPARATING_LINE)
+        timestamps_print.append(tuple(['Total',
+                                self.seconds_to_time(total_time)]))
+
+        print(tabulate(timestamps_print,
               headers=['Title', 'Duration'],
               showindex=False))
 
