@@ -73,3 +73,5 @@ the database or quit.
 
 - Create edit command to edit a specific entry
 - Create ammend command to edit latest entry
+- Create command to remove entry
+- Create possibilty to exclude entry from tally (end of day, lunch, etc.)
