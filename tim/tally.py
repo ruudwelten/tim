@@ -17,17 +17,25 @@ class TallyCommand(AbstractCommand):
         print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
         timestamps = cursor.execute(
-            'SELECT timestamp, title FROM timestamps '
+            'SELECT timestamp, title, tally FROM timestamps '
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
 
         total_time = 0
+        untallied_timestamps_to_remove = []
         for i in range(0, len(timestamps)):
             current = timestamps[i]
             next = current if i == len(timestamps) - 1 else timestamps[i + 1]
             time = next[0] - current[0]
             timestamps[i] = (current + tuple([time]))
-            total_time += time
+            if timestamps[i][2] == 0:
+                untallied_timestamps_to_remove.append(i)
+            else:
+                total_time += time
+
+        untallied_timestamps_to_remove.sort(reverse=True)
+        for index in untallied_timestamps_to_remove:
+            del(timestamps[index])
 
         timestamps.sort(key=lambda x: x[1])
 
@@ -36,15 +44,15 @@ class TallyCommand(AbstractCommand):
             previous = timestamps[i - 1]
             current = timestamps[i]
             if (previous[1] == current[1]):
-                timestamps[i] = (current[0], current[1],
-                                 current[2] + previous[2])
+                timestamps[i] = (current[0], current[1], current[2],
+                                 current[3] + previous[3])
                 duplicate_timestamps_to_remove.append(i - 1)
 
         duplicate_timestamps_to_remove.sort(reverse=True)
         for index in duplicate_timestamps_to_remove:
             del(timestamps[index])
 
-        timestamps_print = [(x[1], self.seconds_to_time(x[2]))
+        timestamps_print = [(x[1], self.seconds_to_time(x[3]))
                             for x in timestamps]
         timestamps_print.append(SEPARATING_LINE)
         timestamps_print.append(tuple(['Total',
