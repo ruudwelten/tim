@@ -75,3 +75,5 @@ the database or quit.
 - Create ammend command to edit latest entry
 - Create command to remove entry
 - Rename group command to a more suitable name for managing the entries
+- Use correct locale, now all times are UTC, which means a log past
+  at midnight CET is still showing the previous day
