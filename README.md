@@ -69,11 +69,15 @@ database at the `db/tim.sqlite` path and initializes the database tables. If a
 database is already present you get the choice to back up the database, remove
 the database or quit.  
 
-## To do:
+## Roadmap
 
-- Create edit command to edit a specific entry
-- Create ammend command to edit latest entry
+- Split commands currently under the `group` command to each be a stand alone
+  command
+- Create a tim shell that allows different operations to be chained
+- Create `edit` command to edit a specific entry
+- Create `amend` command to edit latest entry
 - Create command to remove entry
-- Rename group command to a more suitable name for managing the entries
+- Change if statement in `app.py` to registration set up to prevent this getting
+  too long
 - Use correct locale, now all times are UTC, which means a log past
   at midnight CET is still showing the previous day
