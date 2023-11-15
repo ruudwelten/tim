@@ -26,19 +26,22 @@ Show instructions on how to use Tim.
 
 ### `new`
 
-    $ tim.py new [-r #|--retro=#] [title]
+    $ tim.py new [-#] [-r #|--retro=#] [title]
 
 Create a new timestamp with the `new` command. This saves a current timestamp
 with a title. Unless an amount of minutes in the past is specified by the
 `-r`/`--retro` flag the current time will be used. If no title is specified it
 will be empty.  
+To add new timestamps to days in the past, use the numeric (`-#`) flag. Eg.
+`tim.py new -2 Lorem` to add the timestamp "Lorem" for the current time to the
+log of the day before yesterday.  
 
 ### `log`
 
     $ tim.py log [-#]
 
 List any day's log of timestamps. By default, today's list is shown. With the
-numbered (`-#`) flag the logs of a day in the past can be shown.  
+numeric (`-#`) flag the logs of a day in the past can be shown.  
 Eg. `tim.py log -1` for yesterday's logs.  
 
 ### `group`
@@ -47,7 +50,7 @@ Eg. `tim.py log -1` for yesterday's logs.
 
 With the group command you can update several timestamps' titles so that they
 will be grouped together when tallying all the day's timestamps.  
-With the numbered (`-#`) flag the timestamps of a day in the past can be
+With the numeric (`-#`) flag the timestamps of a day in the past can be
 grouped.  
 
 ### `tally`
@@ -58,7 +61,7 @@ Show the tally of your day's work. All times are calculated in regard to the
 next timestamp and all timestamps with the same title are tallied together.
 Since the last timestamp does not have a follow up timestamp it will have a time
 of zero, so make sure to add and 'End' timestamp.  
-With the numbered (`-#`) flag the tally of a day in the past can be shown.  
+With the numeric (`-#`) flag the tally of a day in the past can be shown.  
 
 ### `init`
 

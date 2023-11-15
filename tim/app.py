@@ -1,5 +1,6 @@
 import re
 import sys
+from typing import Tuple, Optional
 
 from tim.command import AbstractCommand
 from tim.group import GroupCommand
@@ -16,21 +17,12 @@ def main() -> None:
     command = 'log'
     day_offset = 0
 
-    if len(argv) > 0:
-        if argv[0] in ('group', 'help', 'init', 'log', 'new', 'tally'):
-            command = argv[0]
-            argv = argv[1:]
-        else:
-            command = 'log'
-
-        if len(argv) > 0 and re.fullmatch(r'[-+][0-9]+', argv[0]):
-            day_offset = int(argv[0])
+    command, argv = extract_command(argv)
+    day_offset, argv = extract_day_offset(argv)
 
     commandClass: AbstractCommand = HelpCommand(argv, day_offset)
     if command == 'group':
         commandClass = GroupCommand(argv, day_offset)
-    elif command == 'help':
-        commandClass = HelpCommand(argv, day_offset)
     elif command == 'init':
         commandClass = InitCommand(argv, day_offset)
     elif command == 'log':
@@ -41,6 +33,30 @@ def main() -> None:
         commandClass = TallyCommand(argv, day_offset)
 
     commandClass.run()
+
+
+def extract_command(argv) -> Tuple[Optional[str], list]:
+    if len(argv) == 0:
+        return (None, argv)
+
+    if argv[0] in ('group', 'help', 'init', 'log', 'new', 'tally'):
+        return (argv[0], argv[1:])
+
+    return(None, argv)
+
+
+def extract_day_offset(argv) -> Tuple[int, list]:
+    if len(argv) == 0:
+        return (0, argv)
+
+    pattern = re.compile(r'[-+][0-9]+')
+    offset_flags = list(filter(pattern.match, argv))
+    argv = [x for x in argv if x not in offset_flags]
+
+    if len(offset_flags) == 0:
+        return (0, argv)
+
+    return int(offset_flags[-1:][0]), argv
 
 
 if __name__ == "__main__":
