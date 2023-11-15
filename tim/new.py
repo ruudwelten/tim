@@ -1,5 +1,5 @@
+import argparse
 from datetime import datetime, timedelta
-import getopt
 from os import path
 import sqlite3
 import sys
@@ -13,22 +13,24 @@ class NewCommand(AbstractCommand):
 
         self.error = False
         self.time = datetime.now()
-        try:
-            opts, args = getopt.getopt(self.args, 't:r:', ['retro=', 'time='])
-            opt_dict = {x[0]: x[1] for x in opts}
-        except getopt.GetoptError:
-            sys.exit(2)
+        parser = argparse.ArgumentParser(
+            prog='Tim',
+            description='Time tracking helper')
+        parser.add_argument('-r', '--retro')
+        parser.add_argument('-t', '--time')
+        args, argv = parser.parse_known_args(args=self.args)
 
-        if '-t' in opt_dict:
-            self.set_time_by_string(opt_dict['-t'])
-        elif '--time' in opt_dict:
-            self.set_time_by_string(opt_dict['--time'])
-        elif '-r' in opt_dict:
-            self.time -= timedelta(minutes=int(opt_dict['-r']))
-        elif '--retro' in opt_dict:
-            self.time -= timedelta(minutes=int(opt_dict['--retro']))
+        options = vars(args)
 
-        self.title = ' '.join(args)
+        if options['time'] is not None:
+            self.set_time_by_string(options['time'])
+        elif options['retro'] is not None:
+            self.time -= timedelta(minutes=int(options['retro']))
+
+        day_offset = timedelta(days=self.day_offset)
+        self.time = self.time + day_offset
+
+        self.title = ' '.join(argv)
 
     def set_time_by_string(self, time_string) -> None:
         try:
