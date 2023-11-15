@@ -26,15 +26,17 @@ Show instructions on how to use Tim.
 
 ### `new`
 
-    $ tim.py new [-#] [-r #|--retro=#] [title]
+    $ tim.py new [-#] [-r #|--retro=#] [-t HH:MM|--time=HH:MM] [title]
 
 Create a new timestamp with the `new` command. This saves a current timestamp
-with a title. Unless an amount of minutes in the past is specified by the
-`-r`/`--retro` flag the current time will be used. If no title is specified it
-will be empty.  
+with a title. Unless an amount of minutes in the past or a specific time is
+specified by the retro or time flags the current time will be used. If no title
+is specified it will be empty.  
 To add new timestamps to days in the past, use the numeric (`-#`) flag. Eg.
 `tim.py new -2 Lorem` to add the timestamp "Lorem" for the current time to the
 log of the day before yesterday.  
+The numeric flag can be combined with the retro or time flags. For noon on
+yesterday use: `tim.py new -1 -t 12:00`  
 
 ### `log`
 
@@ -84,3 +86,5 @@ the database or quit.
   too long
 - Use correct locale, now all times are UTC, which means a log past
   at midnight CET is still showing the previous day
+- Add configuration for often used timestamp titles that can be automatically
+  toggled off for the tally
