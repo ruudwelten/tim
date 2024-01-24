@@ -31,6 +31,10 @@ class NewCommand(AbstractCommand):
         self.time = self.time + day_offset
 
         self.title = ' '.join(argv)
+        self.tally = 1
+
+        if self.title in self.config['tally']['ignored']:
+            self.tally = 0
 
     def set_time_by_string(self, time_string) -> None:
         try:
@@ -53,6 +57,6 @@ class NewCommand(AbstractCommand):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO timestamps (timestamp, title) VALUES (?, ?);',
-            [timestamp, self.title])
+            'INSERT INTO timestamps (timestamp, title, tally) VALUES (?, ?, ?);',
+            [timestamp, self.title, self.tally])
         conn.commit()

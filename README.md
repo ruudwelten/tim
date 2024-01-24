@@ -7,6 +7,7 @@ A small CLI tool to track your time written in Python.
 
 - Python 3
 - [tabulate](https://pypi.org/project/tabulate/)
+- [tomli](https://pypi.org/project/tomli/)
 
 
 ## Setup
@@ -42,9 +43,9 @@ yesterday use: `tim.py new -1 -t 12:00`
 
     $ tim.py log [-#]
 
-List any day's log of timestamps. By default, today's list is shown. With the
-numeric (`-#`) flag the logs of a day in the past can be shown.  
-Eg. `tim.py log -1` for yesterday's logs.  
+List any day's log of timestamps. By default, today's log is shown. With the
+numeric (`-#`) flag the log of a day in the past can be shown.  
+Eg. `tim.py log -1` for yesterday's log.  
 
 ### `group`
 
@@ -74,6 +75,7 @@ database at the `db/tim.sqlite` path and initializes the database tables. If a
 database is already present you get the choice to back up the database, remove
 the database or quit.  
 
+
 ## Roadmap
 
 - Split commands currently under the `group` command to each be a stand alone
@@ -85,6 +87,4 @@ the database or quit.
 - Change if statement in `app.py` to registration set up to prevent this getting
   too long
 - Use correct locale, now all times are UTC, which means a log past
-  at midnight CET is still showing the previous day
-- Add configuration for often used timestamp titles that can be automatically
-  toggled off for the tally
+  midnight CET is still showing the previous day
