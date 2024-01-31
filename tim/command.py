@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from pathlib import Path
 import tomli
+import shutil
 
 
 class AbstractCommand(ABC):
@@ -19,8 +20,20 @@ class AbstractCommand(ABC):
         self.printed_day = day.strftime('%A, %d-%m-%Y')
 
     def read_config(self) -> None:
-        with open(Path(__file__).parent.parent / 'config.toml', mode='rb') as file:
-            self.config = tomli.load(file)
+        config_file = Path(__file__).parent.parent / 'config.toml'
+        example_config_file = Path(__file__).parent.parent / 'config.example.toml'
+
+        if not config_file.exists():
+            print("Config file does not exist, creating one from example.")
+            print("Edit config.toml to adjust the configuration.")
+            shutil.copy(example_config_file, config_file)
+
+        try:
+            with open(config_file, mode='rb') as file:
+                self.config = tomli.load(file)
+        except FileNotFoundError:
+            # Handle the case when the file does not exist
+            print("Config file does not exist.")
 
     @abstractmethod
     def run(self) -> None:
