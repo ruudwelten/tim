@@ -2,12 +2,15 @@ from datetime import datetime
 from os import path
 import sqlite3
 from tabulate import tabulate
+from typing import Optional
 
 from tim.command import AbstractCommand
 
 
 class LogCommand(AbstractCommand):
     """Log today's timestmaps by default or a previous day with an offset."""
+
+    signature: Optional[str] = "log"
 
     def run(self) -> None:
         print_index = False

@@ -2,10 +2,13 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from pathlib import Path
 import tomli
+from typing import Optional
 import shutil
 
 
 class AbstractCommand(ABC):
+    signature: Optional[str] = None
+
     def __init__(self, args, day_offset):
         self.args = args
         self.day_offset = day_offset

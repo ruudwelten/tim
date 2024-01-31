@@ -31,7 +31,7 @@ def main() -> None:
         commandClass = NewCommand(argv, day_offset)
     elif command == 'tally':
         commandClass = TallyCommand(argv, day_offset)
-
+    # print(command, commandClass.signature)
     commandClass.run()
 
 
@@ -57,6 +57,10 @@ def extract_day_offset(argv) -> Tuple[int, list]:
         return (0, argv)
 
     return int(offset_flags[-1:][0]), argv
+
+
+# def runCommand(command) -> None:
+#     pass
 
 
 if __name__ == "__main__":
