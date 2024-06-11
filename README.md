@@ -94,3 +94,11 @@ the database or quit.
   too long
 - Use correct locale, now all times are UTC, which means a log past
   midnight CET is still showing the previous day
+- Add projects functionality:
+  - CRUD for projects (code, name, color)
+  - When starting a timestamp with the project code, link it to the project and
+    group in tally's, maybe even color code timestamps based on project
+    eg.: `tim new ABC Started project` links "Started project" timestamp to the
+    ABC project.
+  - View project overview
+  - Link timestamps to project manually
