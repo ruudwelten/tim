@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import path
 import sqlite3
 from tabulate import tabulate, SEPARATING_LINE
@@ -20,6 +21,11 @@ class TallyCommand(AbstractCommand):
             'SELECT timestamp, title, tally FROM timestamps '
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
+
+        # When the last timestamp is tallied, tally the time up to "now"
+        latest_timestamp = timestamps[-1]
+        if latest_timestamp[2] == 1:
+            timestamps.append((datetime.now().timestamp(), 'Now', 0))
 
         total_time = 0
         untallied_timestamps_to_remove = []
