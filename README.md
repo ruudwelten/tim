@@ -65,6 +65,12 @@ next timestamp and all timestamps with the same title are tallied together.
 Since the last timestamp does not have a follow up timestamp it will have a time
 of zero, so make sure to add and 'End' timestamp.  
 With the numeric (`-#`) flag the tally of a day in the past can be shown.  
+  
+### `toggle`
+
+    $ tim.py toggle
+
+Interactive command to toggle timestamps to be tallied or not.  
 
 ### `init`
 

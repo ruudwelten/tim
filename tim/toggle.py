@@ -7,8 +7,8 @@ from tabulate import tabulate
 from tim.command import AbstractCommand
 
 
-class GroupCommand(AbstractCommand):
-    """Group tracked timestamps under the same title."""
+class ToggleCommand(AbstractCommand):
+    """Toggle the tally status of a timestamp."""
 
     def run(self) -> None:
         tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
@@ -40,8 +40,8 @@ class GroupCommand(AbstractCommand):
                 for x in timestamps
             ]
 
-            action = input('\n\033[33mEnter the indeces to group (or q to '
-                           'quit): \033[0m')
+            action = input('\n\033[33mEnter the indeces to toggle if they are '
+                           'tallied (or q to quit): \033[0m')
             action = action.lower()
 
             if action == 'q':
@@ -49,30 +49,24 @@ class GroupCommand(AbstractCommand):
 
             if re.fullmatch(r'([0-9]+, *)*[0-9]+', action) is None:
                 print('The input is incorrect. Please supply the indeces '
-                      'of the timestamps you want to group seperated by a '
-                      'comma.')
+                      'of the timestamps for which you want to toggle if '
+                      'they are tallied.')
             else:
                 indeces = [int(x.strip()) for x in action.split(',')]
-                group_stamps = [timestamps[x] for x in indeces]
+                toggle_stamps = [timestamps[x] for x in indeces]
 
-                print('\n')
-                print(tabulate([[x[1], x[2]] for x in group_stamps],
-                               headers=['Time', 'Title']))
-
-                title = input('\n\033[33mEnter a new title for these '
-                              'stamps: \033[0m')
-
-                for stamp in group_stamps:
-                    query = f'''UPDATE timestamps SET title = \'{title}\'
+                for stamp in toggle_stamps:
+                    new_tally = 0 if stamp[3] == 1 else 1
+                    query = f'''UPDATE timestamps SET tally = {new_tally}
                                 WHERE timestamp = {stamp[0]};'''
                     cursor.execute(query)
                 conn.commit()
 
-                group_stamps = " OR ".join(f"timestamp = {str(x[0])}"
-                                           for x in group_stamps)
+                toggle_stamps_where = " OR ".join(f"timestamp = {str(x[0])}"
+                                                  for x in toggle_stamps)
                 timestamps = cursor.execute(
                     'SELECT timestamp, title, tally FROM timestamps '
-                    f'WHERE {group_stamps} '
+                    f'WHERE {toggle_stamps_where} '
                     'ORDER BY timestamp ASC;').fetchall()
                 timestamps_print = [
                     (indeces[i],

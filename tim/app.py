@@ -9,6 +9,7 @@ from tim.init import InitCommand
 from tim.log import LogCommand
 from tim.new import NewCommand
 from tim.tally import TallyCommand
+from tim.toggle import ToggleCommand
 
 
 def main() -> None:
@@ -31,6 +32,8 @@ def main() -> None:
         commandClass = NewCommand(argv, day_offset)
     elif command == 'tally':
         commandClass = TallyCommand(argv, day_offset)
+    elif command == 'toggle':
+        commandClass = ToggleCommand(argv, day_offset)
 
     commandClass.run()
 
@@ -39,10 +42,10 @@ def extract_command(argv) -> Tuple[Optional[str], list]:
     if len(argv) == 0:
         return (None, argv)
 
-    if argv[0] in ('group', 'help', 'init', 'log', 'new', 'tally'):
+    if argv[0] in ('group', 'help', 'init', 'log', 'new', 'tally', 'toggle'):
         return (argv[0], argv[1:])
 
-    return(None, argv)
+    return (None, argv)
 
 
 def extract_day_offset(argv) -> Tuple[int, list]:
