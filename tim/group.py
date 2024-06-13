@@ -4,6 +4,7 @@ import re
 import sqlite3
 from tabulate import tabulate
 
+from tim import TIM_DIR
 from tim.command import AbstractCommand
 
 
@@ -11,8 +12,7 @@ class GroupCommand(AbstractCommand):
     """Group tracked timestamps under the same title."""
 
     def run(self) -> None:
-        tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
-        db = path.join(tim_dir, 'db', 'tim.sqlite')
+        db = path.join(TIM_DIR, 'db', 'tim.sqlite')
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 

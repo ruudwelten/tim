@@ -3,6 +3,7 @@ import sqlite3
 import sys
 import time
 
+from tim import TIM_DIR
 from tim.command import AbstractCommand
 
 
@@ -10,8 +11,7 @@ class InitCommand(AbstractCommand):
     """Initialize Tim, creates new database."""
 
     def run(self) -> None:
-        tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
-        db = path.join(tim_dir, 'db', 'tim.sqlite')
+        db = path.join(TIM_DIR, 'db', 'tim.sqlite')
 
         if path.isfile(db):
             action = input('There is already a database present, what do you '
@@ -24,7 +24,7 @@ class InitCommand(AbstractCommand):
 
             if action == 'b':
                 now = time.strftime('%Y%m%d%H%M%S')
-                rename(db, path.join(tim_dir, 'db', f'tim.{now}.sqlite'))
+                rename(db, path.join(TIM_DIR, 'db', f'tim.{now}.sqlite'))
 
             if action == 'r':
                 remove(db)
@@ -34,7 +34,7 @@ class InitCommand(AbstractCommand):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        sql = open(path.join(tim_dir, 'init.sql'), 'r')
+        sql = open(path.join(TIM_DIR, 'init.sql'), 'r')
         initQueries = sql.read()
         sql.close()
 

@@ -2,8 +2,8 @@ import argparse
 from datetime import datetime, timedelta
 from os import path
 import sqlite3
-import sys
 
+from tim import TIM_DIR
 from tim.command import AbstractCommand
 
 
@@ -52,8 +52,7 @@ class NewCommand(AbstractCommand):
 
         timestamp = self.time.timestamp()
 
-        tim_dir = path.dirname(path.dirname(path.realpath(__file__)))
-        db = path.join(tim_dir, 'db', 'tim.sqlite')
+        db = path.join(TIM_DIR, 'db', 'tim.sqlite')
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
         cursor.execute(
