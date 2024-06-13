@@ -1,4 +1,4 @@
-from tim.command import AbstractCommand
+from tim.commands import AbstractCommand
 
 
 class HelpCommand(AbstractCommand):

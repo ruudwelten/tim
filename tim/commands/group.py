@@ -5,7 +5,7 @@ import sqlite3
 from tabulate import tabulate
 
 from tim import TIM_DIR
-from tim.command import AbstractCommand
+from tim.commands import AbstractCommand
 
 
 class GroupCommand(AbstractCommand):
@@ -80,9 +80,8 @@ class GroupCommand(AbstractCommand):
                      x[1],
                      'Yes' if x[2] == 1 else 'No')
                     for i, x in enumerate(timestamps)]
-                print("\n"
-                      + tabulate(timestamps_print,
-                                 headers=['', 'Time', 'Title', 'Tallied'],
-                                 showindex=False))
+                print("\n" + tabulate(timestamps_print,
+                                      headers=['', 'Time', 'Title', 'Tallied'],
+                                      showindex=False))
 
                 break

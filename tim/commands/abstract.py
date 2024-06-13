@@ -20,8 +20,9 @@ class AbstractCommand(ABC):
         self.printed_day = day.strftime('%A, %d-%m-%Y')
 
     def read_config(self) -> None:
-        config_file = Path(__file__).parent.parent / 'config.toml'
-        example_config_file = Path(__file__).parent.parent / 'config.example.toml'
+        config_file = Path(__file__).parent.parent.parent / 'config.toml'
+        example_config_file = (Path(__file__).parent.parent.parent
+                               / 'config.example.toml')
 
         if not config_file.exists():
             print("Config file does not exist, creating one from example.")

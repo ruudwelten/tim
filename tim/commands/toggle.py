@@ -5,7 +5,7 @@ import sqlite3
 from tabulate import tabulate
 
 from tim import TIM_DIR
-from tim.command import AbstractCommand
+from tim.commands import AbstractCommand
 
 
 class ToggleCommand(AbstractCommand):

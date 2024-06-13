@@ -2,14 +2,10 @@ import re
 import sys
 from typing import Tuple, Optional
 
-from tim.command import AbstractCommand
-from tim.group import GroupCommand
-from tim.help import HelpCommand
-from tim.init import InitCommand
-from tim.log import LogCommand
-from tim.new import NewCommand
-from tim.tally import TallyCommand
-from tim.toggle import ToggleCommand
+from tim.commands import (
+    AbstractCommand, GroupCommand, HelpCommand, InitCommand, LogCommand,
+    NewCommand, TallyCommand, ToggleCommand
+)
 
 
 def main() -> None:

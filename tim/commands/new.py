@@ -4,7 +4,7 @@ from os import path
 import sqlite3
 
 from tim import TIM_DIR
-from tim.command import AbstractCommand
+from tim.commands import AbstractCommand
 
 
 class NewCommand(AbstractCommand):

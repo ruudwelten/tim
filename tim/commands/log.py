@@ -3,7 +3,7 @@ from os import path
 import sqlite3
 from tabulate import tabulate
 
-from tim.command import AbstractCommand
+from tim.commands import AbstractCommand
 
 
 class LogCommand(AbstractCommand):
