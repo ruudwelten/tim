@@ -39,6 +39,13 @@ log of the day before yesterday.
 The numeric flag can be combined with the retro or time flags. For noon on
 yesterday use: `tim.py new -1 -t 12:00`  
 
+### `amend`
+
+    $ tim.py amend
+
+The amend command allows you to rename the title of the highest timestamp. This
+is often the last created timestamp.  
+
 ### `log`
 
     $ tim.py log [-#]
@@ -55,6 +62,12 @@ With the group command you can update several timestamps' titles so that they
 will be grouped together when tallying all the day's timestamps.  
 With the numeric (`-#`) flag the timestamps of a day in the past can be
 grouped.  
+
+### `rename`
+
+    $ tim.py rename
+
+The rename command allows you to rename the title of a specific timestamp.  
 
 ### `tally`
 
@@ -94,6 +107,8 @@ the database or quit.
   too long
 - Use correct locale, now all times are UTC, which means a log past
   midnight CET is still showing the previous day
+- Store added timestamp for each timestamp so that `tim amend` can amend the
+  last added timestamp instead of the highest time
 - Add projects functionality:
   - CRUD for projects (code, name, color)
   - When starting a timestamp with the project code, link it to the project and
