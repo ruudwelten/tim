@@ -4,6 +4,8 @@ from pathlib import Path
 import tomli
 import shutil
 
+from tim.db import DatabaseConnection
+
 
 class AbstractCommand(ABC):
     def __init__(self, args, day_offset):
@@ -18,6 +20,8 @@ class AbstractCommand(ABC):
         self.end = int(datetime.timestamp(datetime(day.year, day.month,
                                                    day.day) + timedelta(1)))
         self.printed_day = day.strftime('%A, %d-%m-%Y')
+
+        self.db = DatabaseConnection()
 
     def read_config(self) -> None:
         config_file = Path(__file__).parent.parent.parent / 'config.toml'
