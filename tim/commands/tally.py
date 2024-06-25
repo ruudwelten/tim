@@ -41,7 +41,7 @@ class TallyCommand(AbstractCommand):
 
         untallied_timestamps_to_remove.sort(reverse=True)
         for index in untallied_timestamps_to_remove:
-            del(timestamps[index])
+            del timestamps[index]
 
         timestamps.sort(key=lambda x: x[1])
 
@@ -56,7 +56,7 @@ class TallyCommand(AbstractCommand):
 
         duplicate_timestamps_to_remove.sort(reverse=True)
         for index in duplicate_timestamps_to_remove:
-            del(timestamps[index])
+            del timestamps[index]
 
         timestamps_print = [(x[1], self.seconds_to_time(x[3]))
                             for x in timestamps]

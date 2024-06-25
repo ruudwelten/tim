@@ -4,7 +4,8 @@ from typing import Tuple, Optional
 
 from tim.commands import (
     AbstractCommand, AmendCommand, GroupCommand, HelpCommand, InitCommand,
-    LogCommand, NewCommand, RenameCommand, TallyCommand, ToggleCommand
+    LogCommand, NewCommand, RenameCommand, TallyCommand, ToggleCommand,
+    TotalCommand
 )
 
 
@@ -34,6 +35,8 @@ def main() -> None:
         commandClass = TallyCommand(argv, day_offset)
     elif command == 'toggle':
         commandClass = ToggleCommand(argv, day_offset)
+    elif command == 'total':
+        commandClass = TotalCommand(argv, day_offset)
 
     commandClass.run()
 
@@ -43,7 +46,7 @@ def extract_command(argv) -> Tuple[Optional[str], list]:
         return (None, argv)
 
     if argv[0] in ('amend', 'group', 'help', 'init', 'log', 'new', 'rename',
-                   'tally', 'toggle'):
+                   'tally', 'toggle', 'total'):
         return (argv[0], argv[1:])
 
     return (None, argv)

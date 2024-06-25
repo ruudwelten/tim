@@ -8,8 +8,9 @@ from tim.commands.new import NewCommand
 from tim.commands.rename import RenameCommand
 from tim.commands.tally import TallyCommand
 from tim.commands.toggle import ToggleCommand
+from tim.commands.total import TotalCommand
 
 
 __all__ = ['AbstractCommand', 'AmendCommand', 'GroupCommand', 'HelpCommand',
            'InitCommand', 'LogCommand', 'NewCommand', 'RenameCommand',
-           'TallyCommand', 'ToggleCommand']
+           'TallyCommand', 'ToggleCommand', 'TotalCommand']
