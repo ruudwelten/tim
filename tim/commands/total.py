@@ -21,6 +21,10 @@ class TotalCommand(AbstractCommand):
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
 
+        if len(timestamps) == 0:
+            print('Total: 00:00')
+            return
+
         # When the last timestamp is tallied, tally the time up to "now"
         latest_timestamp = timestamps[-1]
         if latest_timestamp[2] == 1:
