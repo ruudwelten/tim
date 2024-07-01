@@ -1,9 +1,6 @@
-from datetime import datetime
-from os import path
-import sqlite3
+from datetime import datetime, timedelta
 from tabulate import tabulate, SEPARATING_LINE
 
-from tim import TIM_DIR
 from tim.commands import AbstractCommand
 
 
@@ -11,13 +8,20 @@ class TallyCommand(AbstractCommand):
     """Tally your day's work grouped by title."""
 
     def run(self) -> None:
-        db = path.join(TIM_DIR, 'db', 'tim.sqlite')
-        conn = sqlite3.connect(db)
-        cursor = conn.cursor()
+        if self.week_flag_is_set():
+            self.tally_week()
+        else:
+            self.tally_day()
 
+        self.read_config()
+
+    def week_flag_is_set(self) -> bool:
+        return '-w' in self.args
+
+    def tally_day(self) -> None:
         print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
-        timestamps = cursor.execute(
+        timestamps = self.db.cursor.execute(
             'SELECT timestamp, title, tally FROM timestamps '
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;').fetchall()
@@ -71,6 +75,12 @@ class TallyCommand(AbstractCommand):
         print(tabulate(timestamps_print,
               headers=['Title', 'Duration'],
               showindex=False))
+
+    def tally_week(self):
+        monday = self.day - timedelta(days=self.day.weekday())
+        for i in range(0, 7):
+            self.set_day(monday + timedelta(days=i))
+            self.tally_day()
 
     def seconds_to_time(self, seconds: int) -> str:
         seconds = seconds % (24 * 3600)

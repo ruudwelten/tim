@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from pathlib import Path
-import tomli
 import shutil
+import tomli
 
 from tim.db import DatabaseConnection
 
@@ -14,12 +14,7 @@ class AbstractCommand(ABC):
 
         self.read_config()
 
-        day = datetime.utcnow().date() + timedelta(self.day_offset)
-        self.start = int(datetime.timestamp(datetime(day.year, day.month,
-                                                     day.day)))
-        self.end = int(datetime.timestamp(datetime(day.year, day.month,
-                                                   day.day) + timedelta(1)))
-        self.printed_day = day.strftime('%A, %d-%m-%Y')
+        self.set_day(datetime.now(UTC).date() + timedelta(self.day_offset))
 
         self.db = DatabaseConnection()
 
@@ -39,6 +34,15 @@ class AbstractCommand(ABC):
         except FileNotFoundError:
             # Handle the case when the file does not exist
             print("Config file does not exist.")
+
+    def set_day(self, day) -> None:
+        self.day = day
+        self.start = int(datetime.timestamp(datetime(day.year, day.month,
+                                                     day.day)))
+        self.end = int(datetime.timestamp(datetime(day.year, day.month,
+                                                   day.day)
+                                          + timedelta(1)))
+        self.printed_day = day.strftime('%A, %d-%m-%Y')
 
     @abstractmethod
     def run(self) -> None:
