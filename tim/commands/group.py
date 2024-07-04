@@ -42,12 +42,26 @@ class GroupCommand(AbstractCommand):
                 indeces = [int(x.strip()) for x in action.split(',')]
                 group_stamps = [timestamps[x] for x in indeces]
 
+                titles = [x[2] for x in group_stamps]
+                most_common_title = max(set(titles), key=titles.count)
+
                 print('\n')
                 print(tabulate([[x[1], x[2]] for x in group_stamps],
                                headers=['Time', 'Title']))
 
-                title = input('\n\033[33mEnter a new title for these '
-                              'stamps: \033[0m')
+                try:
+                    title: str = input('\n\033[33mEnter a new title for these '
+                                  'stamps (or q to quit) '
+                                  f'[{most_common_title}]: \033[0m')
+                except KeyboardInterrupt:
+                    print('\n')
+                    break
+
+                if title == 'q':
+                    break
+
+                if not title:
+                    title = most_common_title
 
                 for stamp in group_stamps:
                     query = f'''UPDATE timestamps SET title = \'{title}\'
