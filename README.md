@@ -5,12 +5,15 @@ A small CLI tool to track your time written in Python.
 
 ## Requirements
 
-- Python 3
-- [tabulate](https://pypi.org/project/tabulate/)
-- [tomli](https://pypi.org/project/tomli/)
+- Python 3.8.1+
+- [Poetry](https://pypi.org/project/poetry/)
 
 
 ## Setup
+
+Install the dependencies with the following command:
+
+    $ poetry install
 
 Run this command to create the SQLite database:  
 

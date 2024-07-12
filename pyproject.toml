@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "tim-tracker"
+version = "0.0.1"
+description = "A simple CLI tool that helps you track time."
+authors = ["Ruud Welten <info@ruudwelten.com>"]
+readme = "README.md"
+packages = [{ include = "tim" }]
+
+[tool.poetry.dependencies]
+python = ">=3.8.1"
+tabulate = "^0.9.0"
+tomli = "^2.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pyproject-flake8 = "^7.0.0"
+
+[tool.flake8]
+ignore = "E203, W503"
+
+[tool.isort]
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+
+[build-system]
+requires = [
+    "poetry-core>=1.5.0",
+]
+build-backend = "poetry.core.masonry.api"
