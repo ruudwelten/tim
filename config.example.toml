@@ -1,5 +1,6 @@
 [tally]
 ignored = [
+    "Brake",
     "Lunch",
     "Dinner",
     "End",

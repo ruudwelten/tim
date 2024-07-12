@@ -100,20 +100,17 @@ the database or quit.
 
 ## Roadmap
 
-- Split commands currently under the `group` command to each be a stand alone
-  command
 - Create a tim shell that allows different operations to be chained
 - Create `edit` command to edit a specific entry
-- Create `amend` command to edit latest entry
-- Create command to remove entry
+- Create `delete` command to remove entry
 - Change if statement in `app.py` to registration set up to prevent this getting
   too long
 - Use correct locale, now all times are UTC, which means a log past
   midnight CET is still showing the previous day
-- Store added timestamp for each timestamp so that `tim amend` can amend the
+- Store "added" timestamp for each timestamp so that `tim amend` can amend the
   last added timestamp instead of the highest time
-- Add projects functionality:
-  - CRUD for projects (code, name, color)
+- Add support for projects:
+  - CRUD for projects (code, name, color, start and end dates)
   - When starting a timestamp with the project code, link it to the project and
     group in tally's, maybe even color code timestamps based on project
     eg.: `tim new ABC Started project` links "Started project" timestamp to the
