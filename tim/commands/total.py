@@ -40,6 +40,7 @@ class TotalCommand(AbstractCommand):
                 total_time += time
 
         print(f'Total: {self.seconds_to_time(total_time)}')
+        print('')
 
     def seconds_to_time(self, seconds: int) -> str:
         seconds = seconds % (24 * 3600)

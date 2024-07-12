@@ -9,7 +9,7 @@ class LogCommand(AbstractCommand):
         print_heading(self.printed_day)
 
         timestamps = self.db.execute(
-            'SELECT timestamp, title FROM timestamps '
+            'SELECT timestamp, title, tally FROM timestamps '
             f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
             'ORDER BY timestamp ASC;')
 
