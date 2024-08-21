@@ -31,8 +31,10 @@ class TallyCommand(AbstractCommand):
             return
 
         # When the last timestamp is tallied, tally the time up to "now"
+        ongoing = False
         latest_timestamp = timestamps[-1]
         if latest_timestamp[2] == 1:
+            ongoing = True
             timestamps.append((datetime.now().timestamp(), 'Now', 0))
 
         total_time = 0
@@ -66,15 +68,19 @@ class TallyCommand(AbstractCommand):
         for index in duplicate_timestamps_to_remove:
             del timestamps[index]
 
-        timestamps_print = [(x[1], self.seconds_to_time(x[3]))
+        timestamps_print = [(x[1],
+                             self.seconds_to_time(x[3]) +
+                             (' (ongoing)'
+                              if ongoing and x[1] == latest_timestamp[1]
+                              else ''))
                             for x in timestamps]
         timestamps_print.append(SEPARATING_LINE)
         timestamps_print.append(tuple(['Total',
                                 self.seconds_to_time(total_time)]))
 
         print(tabulate(timestamps_print,
-              headers=['Title', 'Duration'],
-              showindex=False))
+                       headers=['Title', 'Duration'],
+                       showindex=False))
 
     def tally_week(self):
         monday = self.day - timedelta(days=self.day.weekday())
