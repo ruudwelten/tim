@@ -18,6 +18,7 @@ class CommandRegistry:
         'init': CommandInfo('tim.commands.init', 'Initialize Tim, creates database'),
         'log': CommandInfo('tim.commands.log', 'Show a day\'s timestamps'),
         'new': CommandInfo('tim.commands.new', 'Create new timestamp'),
+        'project': CommandInfo('tim.commands.project', 'Manage projects'),
         'rename': CommandInfo('tim.commands.rename', 'Rename timestamp'),
         'tally': CommandInfo('tim.commands.tally', 'Show a day\'s time tally'),
         'toggle': CommandInfo('tim.commands.toggle', 'Toggle the tally status of a timestamp'),

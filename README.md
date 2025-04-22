@@ -97,6 +97,15 @@ database at the `db/tim.sqlite` path and initializes the database tables. If a
 database is already present you get the choice to back up the database, remove
 the database or quit.  
 
+### `project`
+
+    $ tim.py project [command]
+
+Manage projects with the following subcommands: `new`, `list [--all|-a]`,
+`edit [code]`, `remove [code]`, `colors`. Projects can be used to organize and
+color-code your timestamps. When creating a new timestamp, you can prefix the
+title with a project code to link it to that project (e.g.,
+`tim new ABC Started working on feature`).  
 
 ## Roadmap
 
@@ -107,11 +116,16 @@ the database or quit.
   midnight CET is still showing the previous day
 - Store "added" timestamp for each timestamp so that `tim amend` can amend the
   last added timestamp instead of the highest time
+- Introduce database abstraction
+- Support other database types
+- Support for external databases through APIs
+- tim.print.print_color function
+  `print_color(content: string, ansi_color_code: integer)`
 - Add support for projects:
-  - CRUD for projects (code, name, color, start and end dates)
   - When starting a timestamp with the project code, link it to the project and
     group in tally's, maybe even color code timestamps based on project
     eg.: `tim new ABC Started project` links "Started project" timestamp to the
     ABC project.
   - View project overview
   - Link timestamps to project manually
+- Gracefully exit on Ctrl+C
