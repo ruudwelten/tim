@@ -4,7 +4,7 @@ from tabulate import tabulate
 from typing import Optional, Dict
 
 from tim.commands import AbstractCommand
-from tim.print import gray, print_heading
+from tim.print import gray, print_heading, print_success
 
 
 class ProjectCommand(AbstractCommand):
@@ -150,7 +150,7 @@ class ProjectCommand(AbstractCommand):
 
         # Save
         self.save_project(code, name, color, start_timestamp, end_timestamp)
-        print(f"Project {name} ({code}) created successfully")
+        print_success(f"Project {name} ({code}) created successfully")
 
     def list_projects(self) -> None:
         now = int(datetime.now().timestamp())
@@ -280,7 +280,7 @@ class ProjectCommand(AbstractCommand):
                 break
 
         # Confirm and save
-        print(f"Project {name} ({self.args.code}) updated successfully.")
+        print_success(f"Project {name} ({self.args.code}) updated successfully.")
 
         query = '''
             UPDATE projects

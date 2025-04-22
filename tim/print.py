@@ -15,6 +15,14 @@ def print_heading(text: str) -> None:
     print(f'\033[1m\n\033[33m{text}\033[0m\n')
 
 
+def print_success(text: str) -> None:
+    print(f'\033[1m\n\033[32m{text}\033[0m\n')
+
+
+def print_error(text: str) -> None:
+    print(f'\033[1m\n\033[31m{text}\033[0m\n')
+
+
 def print_log(timestamps: list[int, str, Optional[bool]],
               print_index: bool = False) -> None:
     if len(timestamps) == 0:
