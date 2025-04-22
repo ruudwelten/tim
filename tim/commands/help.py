@@ -1,4 +1,5 @@
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 
 
 class HelpCommand(AbstractCommand):
@@ -10,17 +11,18 @@ class HelpCommand(AbstractCommand):
         print('\nUsage: \033[1m\033[33mtim.py \033[36m[command] \033[34m[-#] '
               '\033[36m[options]\033[0m \n'
               '\n'
-              '\033[36mCommands:\033[0m\n'
-              '  \033[1mhelp\033[0m    Show this help text\n'
-              '  \033[1mamend\033[0m   Rename the last timestamp\n'
-              '  \033[1mgroup\033[0m   Group timestamps under the same title\n'
-              '  \033[1minit\033[0m    Initialize Tim, creates database\n'
-              '  \033[1mlog\033[0m     Show a day\'s timestamps\n'
-              '  \033[1mnew\033[0m     Create new timestamp\n'
-              '  \033[1mrename\033[0m  Rename timestamp\n'
-              '  \033[1mtally\033[0m   Show a day\'s time tally\n'
-              '  \033[1mtoggle\033[0m  Toggle the tally status of a timestamp\n'
-              '  \033[1mtotal\033[0m   Output the total tally of your day\'s work')
+              '\033[36mCommands:\033[0m')
+
+        registry = CommandRegistry()
+        descriptions = registry.get_all_command_descriptions()
+
+        # Calculate the maximum command name length for alignment
+        max_command_length = max(len(cmd) for cmd in descriptions.keys())
+
+        for command, description in descriptions.items():
+            # Add padding to align descriptions
+            padding = ' ' * (max_command_length - len(command))
+            print(f'  \033[1m{command}\033[0m{padding}    {description}')
 
     def print_ascii(self) -> None:
         bold = '\033[1m'

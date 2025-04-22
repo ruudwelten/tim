@@ -103,8 +103,6 @@ the database or quit.
 - Create a tim shell that allows different operations to be chained
 - Create `edit` command to edit a specific entry
 - Create `delete` command to remove entry
-- Change if statement in `app.py` to registration set up to prevent this getting
-  too long
 - Use correct locale, now all times are UTC, which means a log past
   midnight CET is still showing the previous day
 - Store "added" timestamp for each timestamp so that `tim amend` can amend the
