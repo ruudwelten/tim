@@ -2,11 +2,7 @@ import re
 import sys
 from typing import Tuple, Optional
 
-from tim.commands import (
-    AbstractCommand, AmendCommand, GroupCommand, HelpCommand, InitCommand,
-    LogCommand, NewCommand, RenameCommand, TallyCommand, ToggleCommand,
-    TotalCommand
-)
+from tim.commands.registry import CommandRegistry
 
 
 def main() -> None:
@@ -18,35 +14,23 @@ def main() -> None:
     command, argv = extract_command(argv)
     day_offset, argv = extract_day_offset(argv)
 
-    commandClass: AbstractCommand = HelpCommand(argv, day_offset)
-    if command == 'amend':
-        commandClass = AmendCommand(argv, day_offset)
-    elif command == 'group':
-        commandClass = GroupCommand(argv, day_offset)
-    elif command == 'init':
-        commandClass = InitCommand(argv, day_offset)
-    elif command == 'log':
-        commandClass = LogCommand(argv, day_offset)
-    elif command == 'new':
-        commandClass = NewCommand(argv, day_offset)
-    elif command == 'rename':
-        commandClass = RenameCommand(argv, day_offset)
-    elif command == 'tally':
-        commandClass = TallyCommand(argv, day_offset)
-    elif command == 'toggle':
-        commandClass = ToggleCommand(argv, day_offset)
-    elif command == 'total':
-        commandClass = TotalCommand(argv, day_offset)
+    registry = CommandRegistry()
+    command_class = registry.get_command(command or 'help')
 
-    commandClass.run()
+    if command_class is None:
+        print(f"Unknown command: {command}")
+        command_class = registry.get_command('help')
+
+    command_instance = command_class(argv, day_offset)
+    command_instance.run()
 
 
 def extract_command(argv) -> Tuple[Optional[str], list]:
     if len(argv) == 0:
         return (None, argv)
 
-    if argv[0] in ('amend', 'group', 'help', 'init', 'log', 'new', 'rename',
-                   'tally', 'toggle', 'total'):
+    registry = CommandRegistry()
+    if argv[0] in registry.get_available_commands():
         return (argv[0], argv[1:])
 
     return (None, argv)
