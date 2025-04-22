@@ -36,7 +36,7 @@ Create a new timestamp with the `new` command. This saves a current timestamp
 with a title. Unless an amount of minutes in the past or a specific time is
 specified by the retro or time flags the current time will be used. If no title
 is specified it will be empty.  
-To add new timestamps to days in the past, use the numeric (`-#`) flag. Eg.
+To add new timestamps to days in the past, use the numeric (`-#`) flag. E.g.,
 `tim.py new -2 Lorem` to add the timestamp "Lorem" for the current time to the
 log of the day before yesterday.  
 The numeric flag can be combined with the retro or time flags. For noon on
@@ -55,7 +55,7 @@ is often the last created timestamp.
 
 List any day's log of timestamps. By default, today's log is shown. With the
 numeric (`-#`) flag the log of a day in the past can be shown.  
-Eg. `tim.py log -1` for yesterday's log.  
+E.g., `tim.py log -1` for yesterday's log.  
 
 ### `group`
 
@@ -124,7 +124,7 @@ title with a project code to link it to that project (e.g.,
 - Add support for projects:
   - When starting a timestamp with the project code, link it to the project and
     group in tally's, maybe even color code timestamps based on project
-    eg.: `tim new ABC Started project` links "Started project" timestamp to the
+    e.g., `tim new ABC Started project` links "Started project" timestamp to the
     ABC project.
   - View project overview
   - Link timestamps to project manually

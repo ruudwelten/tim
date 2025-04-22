@@ -43,7 +43,7 @@ class NewCommand(AbstractCommand):
                 time_string, '%d-%m-%Y %H:%M')
         except ValueError:
             self.error = 'Incorrect time pattern, please use the pattern ' \
-                         'HH:MM (eg. 13:45).'
+                         'HH:MM (e.g., 13:45).'
 
     def run(self) -> None:
         if self.error is not False:
