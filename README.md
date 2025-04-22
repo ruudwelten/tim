@@ -128,4 +128,3 @@ title with a project code to link it to that project (e.g.,
     ABC project.
   - View project overview
   - Link timestamps to project manually
-- Gracefully exit on Ctrl+C

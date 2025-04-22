@@ -6,23 +6,27 @@ from tim.commands.registry import CommandRegistry
 
 
 def main() -> None:
-    argv = sys.argv[1:]
+    try:
+        argv = sys.argv[1:]
 
-    command = 'log'
-    day_offset = 0
+        command = 'log'
+        day_offset = 0
 
-    command, argv = extract_command(argv)
-    day_offset, argv = extract_day_offset(argv)
+        command, argv = extract_command(argv)
+        day_offset, argv = extract_day_offset(argv)
 
-    registry = CommandRegistry()
-    command_class = registry.get_command(command or 'help')
+        registry = CommandRegistry()
+        command_class = registry.get_command(command or 'help')
 
-    if command_class is None:
-        print(f"Unknown command: {command}")
-        command_class = registry.get_command('help')
+        if command_class is None:
+            print(f"Unknown command: {command}")
+            command_class = registry.get_command('help')
 
-    command_instance = command_class(argv, day_offset)
-    command_instance.run()
+        command_instance = command_class(argv, day_offset)
+        command_instance.run()
+    except KeyboardInterrupt:
+        print()
+        sys.exit(0)
 
 
 def extract_command(argv) -> Tuple[Optional[str], list]:
