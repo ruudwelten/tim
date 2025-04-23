@@ -44,6 +44,17 @@ class InitCommand(AbstractCommand):
         initQueries = sql.read()
         sql.close()
 
-        cursor.execute(initQueries)
+        queryLines = [x for x in initQueries.split('\n')
+                          if x.strip() and not x.strip().startswith('--')]
+        queries = '\n'.join(queryLines).split(';')
 
-        print(conn.total_changes, initQueries)
+        # Execute each query separately
+        for query in queries:
+            try:
+                cursor.execute(query)
+            except Exception as e:
+                print(f"Error executing query: {query}")
+                print(f"Error details: {str(e)}")
+                raise
+
+        print_success('Tim database initialized')
