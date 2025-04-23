@@ -5,6 +5,7 @@ import time
 
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
+from tim.print import colorize, print_success, YELLOW
 
 
 class InitCommand(AbstractCommand):
@@ -14,8 +15,10 @@ class InitCommand(AbstractCommand):
         db = path.join(TIM_DIR, 'db', 'tim.sqlite')
 
         if path.isfile(db):
-            action = input('There is already a database present, what do you '
-                           'want to do? [b(ackup), r(emove), q(uit)]? ')
+            action = input(colorize('\nThere is already a database present, '
+                                    'what do you want to do? '
+                                    '[b(ackup), r(emove), q(uit)]? ',
+                                    YELLOW))
             action = action.lower()
 
             if action != 'b' and action != 'r':
@@ -24,7 +27,10 @@ class InitCommand(AbstractCommand):
 
             if action == 'b':
                 now = time.strftime('%Y%m%d%H%M%S')
-                rename(db, path.join(TIM_DIR, 'db', f'tim.{now}.sqlite'))
+                backup_path = path.join(TIM_DIR, 'db', f'tim.{now}.sqlite')
+                rename(db, backup_path)
+
+                print(f'Backup created at {backup_path}')
 
             if action == 'r':
                 remove(db)
