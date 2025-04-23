@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from tabulate import tabulate, SEPARATING_LINE
 
 from tim.commands import AbstractCommand
+from tim.print import colorize
 
 
 class TallyCommand(AbstractCommand):
@@ -21,10 +22,17 @@ class TallyCommand(AbstractCommand):
     def tally_day(self) -> None:
         print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
-        timestamps = self.db.cursor.execute(
-            'SELECT timestamp, title, tally FROM timestamps '
-            f'WHERE timestamp >= {self.start} AND timestamp < {self.end} '
-            'ORDER BY timestamp ASC;').fetchall()
+        timestamps = self.db.cursor.execute(f'''
+            SELECT t.timestamp, t.title, t.tally, p.color
+            FROM timestamps t
+            LEFT JOIN projects p
+                ON SUBSTR(t.title, 1, INSTR(t.title, ' ')-1) = p.code
+                    AND (t.timestamp >= p.start OR p.start IS NULL)
+                    AND (t.timestamp <= p.end OR p.end IS NULL)
+                    AND t.tally = 1
+            WHERE t.timestamp >= {self.start} AND t.timestamp < {self.end}
+            ORDER BY t.timestamp ASC;
+        ''').fetchall()
 
         if len(timestamps) == 0:
             print('No timestamps on this day.')
@@ -61,22 +69,24 @@ class TallyCommand(AbstractCommand):
             current = timestamps[i]
             if (previous[1] == current[1]):
                 timestamps[i] = (current[0], current[1], current[2],
-                                 current[3] + previous[3])
+                                 current[3], current[4] + previous[4])
                 duplicate_timestamps_to_remove.append(i - 1)
 
         duplicate_timestamps_to_remove.sort(reverse=True)
         for index in duplicate_timestamps_to_remove:
             del timestamps[index]
 
-        timestamps_print = [(x[1],
-                             self.seconds_to_time(x[3]) +
+        timestamps_print = [((colorize(x[1].split(' ')[0], x[3]) +
+                              ' ' + ' '.join(x[1].split(' ')[1:])
+                              if x[3] is not None else x[1]),
+                             self.seconds_to_time(x[4]) +
                              (' (ongoing)'
                               if ongoing and x[1] == latest_timestamp[1]
                               else ''))
                             for x in timestamps]
         timestamps_print.append(SEPARATING_LINE)
         timestamps_print.append(tuple(['Total',
-                                self.seconds_to_time(total_time)]))
+                                       self.seconds_to_time(total_time)]))
 
         print(tabulate(timestamps_print,
                        headers=['Title', 'Duration'],
