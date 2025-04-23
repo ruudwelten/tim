@@ -3,7 +3,7 @@ import re
 from tabulate import tabulate
 
 from tim.commands import AbstractCommand
-from tim.print import print_heading, print_log
+from tim.print import print_heading, print_log, colorize, YELLOW
 
 
 class RenameCommand(AbstractCommand):
@@ -27,8 +27,8 @@ class RenameCommand(AbstractCommand):
                 for x in timestamps
             ]
 
-            index = input('\n\033[33mEnter the index of the timestamp to '
-                          'rename (or q to quit): \033[0m')
+            index = input(colorize('\nEnter the index of the timestamp to '
+                                   'rename (or q to quit):', YELLOW))
             index = index.lower()
 
             if index == 'q':
@@ -44,8 +44,8 @@ class RenameCommand(AbstractCommand):
                 print(tabulate([[rename_stamp[1], rename_stamp[2]]],
                                headers=['Time', 'Title']))
 
-                title = input('\n\033[33mEnter a new title for this stamp: '
-                              '\033[0m')
+                title = input(colorize('\nEnter a new title for this stamp:',
+                                       YELLOW))
 
                 query = f'''UPDATE timestamps SET title = \'{title}\'
                             WHERE timestamp = {rename_stamp[0]};'''

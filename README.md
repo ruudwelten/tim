@@ -119,8 +119,6 @@ title with a project code to link it to that project (e.g.,
 - Introduce database abstraction
 - Support other database types
 - Support for external databases through APIs
-- tim.print.print_color function
-  `print_color(content: string, ansi_color_code: integer)`
 - Add support for projects:
   - When starting a timestamp with the project code, link it to the project and
     group in tally's, maybe even color code timestamps based on project

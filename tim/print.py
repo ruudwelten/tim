@@ -1,10 +1,53 @@
 from datetime import datetime
 from tabulate import tabulate
-from typing import Optional
+from typing import Optional, Dict
 
 
-def gray(test: str) -> str:
-    return f'\033[90m{test}\033[0m'
+# ANSI color codes
+BOLD = 1
+BLACK = 30
+RED = 31
+GREEN = 32
+YELLOW = 33
+BLUE = 34
+MAGENTA = 35
+CYAN = 36
+WHITE = 37
+GRAY = 90
+BRIGHT_RED = 91
+BRIGHT_GREEN = 92
+BRIGHT_YELLOW = 93
+BRIGHT_BLUE = 94
+BRIGHT_MAGENTA = 95
+BRIGHT_CYAN = 96
+BRIGHT_WHITE = 97
+COLORS: Dict[int, str] = {
+    BLACK: 'Black',
+    RED: 'Red',
+    GREEN: 'Green',
+    YELLOW: 'Yellow',
+    BLUE: 'Blue',
+    MAGENTA: 'Magenta',
+    CYAN: 'Cyan',
+    WHITE: 'White',
+    GRAY: 'Gray',
+    BRIGHT_RED: 'Bright Red',
+    BRIGHT_GREEN: 'Bright Green',
+    BRIGHT_YELLOW: 'Bright Yellow',
+    BRIGHT_BLUE: 'Bright Blue',
+    BRIGHT_MAGENTA: 'Bright Magenta',
+}
+
+
+def gray(text: str) -> str:
+    return colorize(text, GRAY)
+
+
+def colorize(text: str, color_code: int, bold: bool = False) -> str:
+    codes = [color_code]
+    if bold:
+        codes.append(BOLD)
+    return f'\033[{";".join(str(c) for c in codes)}m{text}\033[0m'
 
 
 def timestamp_to_time(timestamp: int) -> str:
@@ -12,15 +55,15 @@ def timestamp_to_time(timestamp: int) -> str:
 
 
 def print_heading(text: str) -> None:
-    print(f'\033[1m\n\033[33m{text}\033[0m\n')
+    print(f'\n{colorize(text, YELLOW, bold=True)}\n')
 
 
 def print_success(text: str) -> None:
-    print(f'\033[1m\n\033[32m{text}\033[0m\n')
+    print(f'\n{colorize(text, GREEN, bold=True)}\n')
 
 
 def print_error(text: str) -> None:
-    print(f'\033[1m\n\033[31m{text}\033[0m\n')
+    print(f'\n{colorize(text, RED, bold=True)}\n')
 
 
 def print_log(timestamps: list[int, str, Optional[bool]],
@@ -55,6 +98,6 @@ def print_log(timestamps: list[int, str, Optional[bool]],
             tallied_timestamps_present = True
             break
     if tallied_timestamps_present:
-        print('\n\033[90m* Gray: Non tallied timestamps\033[0m')
+        print(f'\n{gray("* Gray: Non tallied timestamps")}')
 
     print('')

@@ -1,34 +1,16 @@
 import argparse
 from datetime import datetime
 from tabulate import tabulate
-from typing import Optional, Dict
+from typing import Optional
 
 from tim.commands import AbstractCommand
-from tim.print import gray, print_heading, print_success
+from tim.print import (
+    gray, print_heading, print_success, colorize, COLORS, YELLOW
+)
 
 
 class ProjectCommand(AbstractCommand):
     """Manage projects."""
-
-    # ANSI colors
-    COLORS: Dict[int, str] = {
-        30: 'Black',
-        31: 'Red',
-        32: 'Green',
-        33: 'Yellow',
-        34: 'Blue',
-        35: 'Magenta',
-        36: 'Cyan',
-        37: 'White',
-        90: 'Bright Black',
-        91: 'Bright Red',
-        92: 'Bright Green',
-        93: 'Bright Yellow',
-        94: 'Bright Blue',
-        95: 'Bright Magenta',
-        96: 'Bright Cyan',
-        97: 'Bright White'
-    }
 
     def __init__(self, args, day_offset):
         super(ProjectCommand, self).__init__(args, day_offset)
@@ -122,9 +104,9 @@ class ProjectCommand(AbstractCommand):
                 break
             try:
                 color = int(color_input)
-                if color in self.COLORS:
+                if color in COLORS:
                     break
-                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in self.COLORS.keys())}"))
+                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
             except ValueError:
                 print(gray("Please enter a valid number."))
 
@@ -183,33 +165,24 @@ class ProjectCommand(AbstractCommand):
         if not projects:
             print(gray("No current projects found."))
             if non_current_projects:
-                print(gray("\nUse 'tim project list --all' to see all projects."))
+                print(gray("\nUse 'tim project list --all' to see all "
+                           "projects."))
             return
 
         # Format the projects for display
         formatted_projects = []
         for project in projects:
-            start_date = datetime.fromtimestamp(project[3]).strftime('%Y-%m-%d') if project[3] else gray('Not set')
-            end_date = datetime.fromtimestamp(project[4]).strftime('%Y-%m-%d') if project[4] else gray('Not set')
-            project_code = f'\033[{project[2]}m{project[0]}\033[0m'
-            project_name = f'\033[{project[2]}m{project[1]}\033[0m'
-            formatted_projects.append([
-                project_code,
-                project_name,
-                start_date,
-                end_date,
-            ])
+            project_code = colorize(project[0], project[2])
+            project_name = colorize(project[1], project[2])
+            start_date = datetime.fromtimestamp(project[3]).strftime('%Y-%m-%d') if project[3] else gray('---')
+            end_date = datetime.fromtimestamp(project[4]).strftime('%Y-%m-%d') if project[4] else gray('---')
+            formatted_projects.append((project_code, project_name, start_date, end_date))
 
-        # Print header
-        header = "All Projects" if self.args.all else "Current Projects"
-        print_heading(header)
-        print(tabulate(
-            formatted_projects,
-            headers=['Code', 'Name', 'Start', 'End'],
-            tablefmt='simple'
-        ))
+        print_heading("All projects" if self.args.all else "Current projects")
+        print(tabulate(formatted_projects,
+                       headers=['Code', 'Name', 'Start', 'End'],
+                       showindex=False))
 
-        # Show hint about --all flag if there are non-current projects
         if non_current_projects and not self.args.all:
             print(gray("\nUse 'tim project list --all' to see all projects."))
 
@@ -253,9 +226,9 @@ class ProjectCommand(AbstractCommand):
                 break
             try:
                 color = int(color_input)
-                if color in self.COLORS:
+                if color in COLORS:
                     break
-                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in self.COLORS.keys())}"))
+                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
             except ValueError:
                 print(gray("Please enter a valid number."))
 
@@ -279,66 +252,60 @@ class ProjectCommand(AbstractCommand):
             if end_timestamp is not None:
                 break
 
-        # Confirm and save
-        print_success(f"Project {name} ({self.args.code}) updated successfully.")
-
-        query = '''
+        # Save changes
+        self.db.cursor.execute('''
             UPDATE projects
             SET name = ?, color = ?, start = ?, end = ?
             WHERE code = ?
-        '''
-        self.db.cursor.execute(query, [
-            name,
-            color,
-            start_timestamp,
-            end_timestamp,
-            self.args.code
-        ])
+        ''', [name, color, start_timestamp, end_timestamp, self.args.code])
         self.db.commit()
 
+        print_success(f'Project {name} ({self.args.code}) updated successfully')
+
     def remove_project(self) -> None:
+        """Remove a project."""
         # First check if project exists
         project = self.db.cursor.execute('''
-            SELECT code
+            SELECT code, name
             FROM projects
             WHERE code = ?
         ''', [self.args.code]).fetchall()
 
         if not project:
-            print(gray(f"Project {self.args.code} not found."))
+            print(gray(f'Project {self.args.code} not found.'))
             return
 
-        self.db.cursor.execute('DELETE FROM projects WHERE code = ?', [self.args.code])
+        project = project[0]
+        name = project[1]
+
+        # Confirm removal
+        confirm = input(colorize("\nAre you sure you want to remove project "
+                                 f"{name} ({self.args.code})? (y/N): ",
+                                 YELLOW)).strip().lower()
+        if confirm != 'y':
+            print(gray('Project removal cancelled.'))
+            return
+
+        # Remove project
+        self.db.cursor.execute('DELETE FROM projects WHERE code = ?',
+                               [self.args.code])
         self.db.commit()
-        print(f"Project {self.args.code} removed successfully.")
+
+        print_success(f'Project {name} ({self.args.code}) removed '
+                      'successfully')
 
     def show_colors(self) -> None:
-        """Display a table of available colors with previews."""
-        color_rows = []
-        for code, name in self.COLORS.items():
-            color_preview = f'\033[{code}m{name}\033[0m'
-            color_rows.append([code, name, color_preview])
-
+        """Show available colors with preview."""
         print_heading("Available colors")
-        print(tabulate(
-            color_rows,
-            headers=['Code', 'Name', 'Preview'],
-            tablefmt='simple'
-        ))
-        print(gray("\nNote: Colors may appear differently depending on your terminal."))
+        for code, name in COLORS.items():
+            color_preview = colorize(name, code)
+            print(f"{code:2d}: {color_preview}")
 
     def save_project(self, code: str, name: str, color: int,
-                     start_timestamp: Optional[int], end_timestamp: Optional[int]) -> None:
-        """Save a project to the database."""
-        query = '''
+                    start: Optional[int], end: Optional[int]) -> None:
+        """Save a new project to the database."""
+        self.db.cursor.execute('''
             INSERT INTO projects (code, name, color, start, end)
             VALUES (?, ?, ?, ?, ?)
-        '''
-        self.db.cursor.execute(query, [
-            code,
-            name,
-            color,
-            start_timestamp,
-            end_timestamp
-        ])
+        ''', [code, name, color, start, end])
         self.db.commit()

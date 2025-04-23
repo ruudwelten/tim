@@ -3,7 +3,7 @@ import re
 from tabulate import tabulate
 
 from tim.commands import AbstractCommand
-from tim.print import print_heading, print_log
+from tim.print import print_heading, print_log, colorize, YELLOW
 
 
 class GroupCommand(AbstractCommand):
@@ -27,8 +27,8 @@ class GroupCommand(AbstractCommand):
                 for x in timestamps
             ]
 
-            action = input('\n\033[33mEnter the indeces to group (or q to '
-                           'quit): \033[0m')
+            action = input(colorize('\nEnter the indeces to group (or q to '
+                                     'quit): ', YELLOW))
             action = action.lower()
 
             if action == 'q':
@@ -50,9 +50,10 @@ class GroupCommand(AbstractCommand):
                                headers=['Time', 'Title']))
 
                 try:
-                    title: str = input('\n\033[33mEnter a new title for these '
-                                  'stamps (or q to quit) '
-                                  f'[{most_common_title}]: \033[0m')
+                    title: str = input(colorize('\nEnter a new title for '
+                                                'these stamps (or q to quit) '
+                                                f'[{most_common_title}]: ',
+                                                YELLOW))
                 except KeyboardInterrupt:
                     print('\n')
                     break
