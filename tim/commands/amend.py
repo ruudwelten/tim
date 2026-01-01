@@ -17,12 +17,10 @@ class AmendCommand(AbstractCommand):
                                   .strftime('%A, %d-%m-%Y'),)
             print_log([timestamp])
 
-            title = input('\n\033[33mEnter a new title for this stamp: '
-                          '\033[0m')
+            title = input("\n\033[33mEnter a new title for this stamp: \033[0m")
 
-            query = f'''UPDATE timestamps SET title = \'{title}\'
-                        WHERE timestamp = {timestamp[0]};'''
-            self.db.execute(query)
+            query = "UPDATE timestamps SET title = ? WHERE timestamp = ?;"
+            self.db.execute(query, (title, timestamp[0]))
             self.db.commit()
 
             print("")

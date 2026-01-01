@@ -1,5 +1,5 @@
 from tim.commands import AbstractCommand
-from tim.print import print_log, print_heading, colorize
+from tim.print import colorize, print_heading, print_log
 
 
 class LogCommand(AbstractCommand):
@@ -8,7 +8,7 @@ class LogCommand(AbstractCommand):
     def run(self) -> None:
         print_heading(self.printed_day)
 
-        timestamps = self.db.cursor.execute(f'''
+        timestamps = self.db.execute('''
             SELECT t.timestamp, t.title, t.tally, p.color
             FROM timestamps t
             LEFT JOIN projects p
@@ -16,9 +16,11 @@ class LogCommand(AbstractCommand):
                     AND (t.timestamp >= p.start OR p.start IS NULL)
                     AND (t.timestamp <= p.end OR p.end IS NULL)
                     AND t.tally = 1
-            WHERE t.timestamp >= {self.start} AND t.timestamp < {self.end}
+            WHERE t.timestamp >= ? AND t.timestamp < ?
             ORDER BY t.timestamp ASC;
-        ''').fetchall()
+        ''',
+            (self.start, self.end),
+        )
 
         timestamps_print = [(
             x[0],

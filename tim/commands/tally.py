@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-from tabulate import tabulate, SEPARATING_LINE
+
+from tabulate import SEPARATING_LINE, tabulate
 
 from tim.commands import AbstractCommand
 from tim.print import colorize
@@ -22,7 +23,7 @@ class TallyCommand(AbstractCommand):
     def tally_day(self) -> None:
         print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
-        timestamps = self.db.cursor.execute(f'''
+        timestamps = self.db.execute('''
             SELECT t.timestamp, t.title, t.tally, p.color
             FROM timestamps t
             LEFT JOIN projects p
@@ -30,9 +31,11 @@ class TallyCommand(AbstractCommand):
                     AND (t.timestamp >= p.start OR p.start IS NULL)
                     AND (t.timestamp <= p.end OR p.end IS NULL)
                     AND t.tally = 1
-            WHERE t.timestamp >= {self.start} AND t.timestamp < {self.end}
+            WHERE t.timestamp >= ? AND t.timestamp < ?
             ORDER BY t.timestamp ASC;
-        ''').fetchall()
+        ''',
+            (self.start, self.end),
+        )
 
         if len(timestamps) == 0:
             print('No timestamps on this day.')

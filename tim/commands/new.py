@@ -1,9 +1,6 @@
 import argparse
 from datetime import datetime, timedelta
-from os import path
-import sqlite3
 
-from tim import TIM_DIR
 from tim.commands import AbstractCommand
 
 
@@ -52,10 +49,8 @@ class NewCommand(AbstractCommand):
 
         timestamp = self.time.timestamp()
 
-        db = path.join(TIM_DIR, 'db', 'tim.sqlite')
-        conn = sqlite3.connect(db)
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO timestamps (timestamp, title, tally) VALUES (?, ?, ?);',
-            [timestamp, self.title, self.tally])
-        conn.commit()
+        self.db.execute(
+            "INSERT INTO timestamps (timestamp, title, tally) VALUES (?, ?, ?);",
+            (timestamp, self.title, self.tally),
+        )
+        self.db.commit()
