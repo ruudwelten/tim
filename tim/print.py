@@ -1,7 +1,7 @@
 from datetime import datetime
-from tabulate import tabulate
-from typing import Optional, Dict
+from typing import Dict, Optional
 
+from tabulate import tabulate
 
 # ANSI color codes
 BOLD = 1
@@ -66,7 +66,7 @@ def print_error(text: str) -> None:
     print(f'\n{colorize(text, RED, bold=True)}\n')
 
 
-def print_log(timestamps: list[int, str, Optional[bool]],
+def print_log(timestamps: list[tuple[int, str, Optional[bool]]],
               print_index: bool = False) -> None:
     if len(timestamps) == 0:
         print('Oh no! Your log for this day looks empty ...\n'
