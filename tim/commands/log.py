@@ -3,22 +3,23 @@ from tim.print import colorize, print_heading, print_log
 
 
 class LogCommand(AbstractCommand):
-    """Log today's timestmaps by default or a previous day with an offset."""
+    """Log today's timestamps by default or a previous day with an offset."""
 
     def run(self) -> None:
         print_heading(self.printed_day)
 
-        timestamps = self.db.execute('''
-            SELECT t.timestamp, t.title, t.tally, p.color
-            FROM timestamps t
-            LEFT JOIN projects p
-                ON SUBSTR(t.title, 1, INSTR(t.title, ' ')-1) = p.code
-                    AND (t.timestamp >= p.start OR p.start IS NULL)
-                    AND (t.timestamp <= p.end OR p.end IS NULL)
-                    AND t.tally = 1
-            WHERE t.timestamp >= ? AND t.timestamp < ?
-            ORDER BY t.timestamp ASC;
-        ''',
+        timestamps = self.db.execute(
+            '''
+                SELECT t.timestamp, t.title, t.tally, p.color
+                FROM timestamps t
+                LEFT JOIN projects p
+                    ON SUBSTR(t.title, 1, INSTR(t.title, ' ')-1) = p.code
+                        AND (t.timestamp >= p.start OR p.start IS NULL)
+                        AND (t.timestamp <= p.end OR p.end IS NULL)
+                        AND t.tally = 1
+                WHERE t.timestamp >= ? AND t.timestamp < ?
+                ORDER BY t.timestamp ASC;
+            ''',
             (self.start, self.end),
         )
 

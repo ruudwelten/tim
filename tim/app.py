@@ -1,6 +1,6 @@
 import re
 import sys
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 from tim.commands.registry import CommandRegistry
 
@@ -16,10 +16,10 @@ def main() -> None:
         day_offset, argv = extract_day_offset(argv)
 
         registry = CommandRegistry()
-        command_class = registry.get_command(command or 'help')
-
-        if command_class is None:
-            print(f"Unknown command: {command}")
+        try:
+            command_class = registry.get_command(command or 'help')
+        except KeyError:
+            print(f"\033[31mUnknown command: {command}\033[0m")
             command_class = registry.get_command('help')
 
         command_instance = command_class(argv, day_offset)
@@ -32,12 +32,7 @@ def main() -> None:
 def extract_command(argv) -> Tuple[Optional[str], list]:
     if len(argv) == 0:
         return (None, argv)
-
-    registry = CommandRegistry()
-    if argv[0] in registry.get_available_commands():
-        return (argv[0], argv[1:])
-
-    return (None, argv)
+    return (argv[0], argv[1:])
 
 
 def extract_day_offset(argv) -> Tuple[int, list]:

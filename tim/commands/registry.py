@@ -1,5 +1,6 @@
-from typing import Dict, Type, Optional, NamedTuple
 from importlib import import_module
+from typing import Dict, NamedTuple, Type
+
 from .abstract import AbstractCommand
 
 
@@ -30,12 +31,12 @@ class CommandRegistry:
             cls._instance = super(CommandRegistry, cls).__new__(cls)
         return cls._instance
 
-    def get_command(self, command_name: str) -> Optional[Type[AbstractCommand]]:
+    def get_command(self, command_name: str) -> Type[AbstractCommand]:
         """Get a command class by name, loading it if necessary."""
-        if command_name not in self._commands:
-            if command_name not in self._command_info:
-                return None
+        if command_name not in self._command_info:
+            raise KeyError(f"Unknown command: {command_name}")
 
+        if command_name not in self._commands:
             module_path = self._command_info[command_name].module_path
             module = import_module(module_path)
             command_class = getattr(module, f"{command_name.title()}Command")
@@ -47,11 +48,11 @@ class CommandRegistry:
         """Get a list of all available command names."""
         return list(self._command_info.keys())
 
-    def get_command_description(self, command_name: str) -> Optional[str]:
+    def get_command_description(self, command_name: str) -> str:
         """Get the description for a command."""
-        if command_name in self._command_info:
-            return self._command_info[command_name].description
-        return None
+        if command_name not in self._command_info:
+            raise KeyError(f"Unknown command: {command_name}")
+        return self._command_info[command_name].description
 
     def get_all_command_descriptions(self) -> Dict[str, str]:
         """Get descriptions for all commands."""
