@@ -114,8 +114,6 @@ title with a project code to link it to that project (e.g.,
 - Create `delete` command to remove entry
 - Use correct locale, now all times are UTC, which means a log past
   midnight CET is still showing the previous day
-- Store "added" timestamp for each timestamp so that `tim amend` can amend the
-  last added timestamp instead of the highest time
 - Introduce database abstraction
 - Support other database types
 - Support for external databases through APIs
