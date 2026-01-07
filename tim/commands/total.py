@@ -1,13 +1,15 @@
+import sqlite3
 from datetime import datetime
 from os import path
-import sqlite3
 
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 
 
+@CommandRegistry.register('total')
 class TotalCommand(AbstractCommand):
-    """Output the total tally of your day's work."""
+    """Output the total tally of your day's work"""
 
     def run(self) -> None:
         db = path.join(TIM_DIR, 'db', 'tim.sqlite')

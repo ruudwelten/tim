@@ -1,9 +1,11 @@
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 from tim.print import colorize, print_heading, print_log
 
 
+@CommandRegistry.register('log')
 class LogCommand(AbstractCommand):
-    """Log today's timestamps by default or a previous day with an offset."""
+    """Show a day's timestamps"""
 
     def run(self) -> None:
         print_heading(self.printed_day)

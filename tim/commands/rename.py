@@ -1,11 +1,14 @@
-from datetime import datetime
 import re
+from datetime import datetime
+
 from tabulate import tabulate
 
 from tim.commands import AbstractCommand
-from tim.print import print_heading, print_log, colorize, YELLOW
+from tim.commands.registry import CommandRegistry
+from tim.print import YELLOW, colorize, print_heading, print_log
 
 
+@CommandRegistry.register('rename')
 class RenameCommand(AbstractCommand):
     """Rename timestamp"""
 

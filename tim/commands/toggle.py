@@ -1,15 +1,18 @@
-from datetime import datetime
-from os import path
 import re
 import sqlite3
+from datetime import datetime
+from os import path
+
 from tabulate import tabulate
 
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 
 
+@CommandRegistry.register('toggle')
 class ToggleCommand(AbstractCommand):
-    """Toggle the tally status of a timestamp."""
+    """Toggle the tally status of a timestamp"""
 
     def run(self) -> None:
         db = path.join(TIM_DIR, 'db', 'tim.sqlite')

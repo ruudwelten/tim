@@ -1,15 +1,17 @@
-from os import path, remove, rename
 import sqlite3
 import sys
 import time
+from os import path, remove, rename
 
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
-from tim.print import colorize, print_success, YELLOW
+from tim.commands.registry import CommandRegistry
+from tim.print import YELLOW, colorize, print_success
 
 
+@CommandRegistry.register('init')
 class InitCommand(AbstractCommand):
-    """Initialize Tim, creates new database."""
+    """Initialize Tim, creates new database"""
 
     def run(self) -> None:
         db = path.join(TIM_DIR, 'db', 'tim.sqlite')
@@ -45,7 +47,7 @@ class InitCommand(AbstractCommand):
         sql.close()
 
         queryLines = [x for x in initQueries.split('\n')
-                          if x.strip() and not x.strip().startswith('--')]
+                      if x.strip() and not x.strip().startswith('--')]
         queries = '\n'.join(queryLines).split(';')
 
         # Execute each query separately

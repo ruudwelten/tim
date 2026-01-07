@@ -2,9 +2,13 @@ import argparse
 from datetime import datetime, timedelta
 
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 
 
+@CommandRegistry.register('new')
 class NewCommand(AbstractCommand):
+    """Create new timestamp"""
+
     def __init__(self, args, day_offset):
         super(NewCommand, self).__init__(args, day_offset)
 

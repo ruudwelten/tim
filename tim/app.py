@@ -2,6 +2,19 @@ import re
 import sys
 from typing import Optional, Tuple
 
+from tim.commands import (  # noqa: F401
+    amend,
+    group,
+    help,
+    init,
+    log,
+    new,
+    project,
+    rename,
+    tally,
+    toggle,
+    total,
+)
 from tim.commands.registry import CommandRegistry
 
 
@@ -17,12 +30,12 @@ def main() -> None:
 
         registry = CommandRegistry()
         try:
-            command_class = registry.get_command(command or 'help')
+            command_instance = registry.get_command(command or 'help',
+                                                    argv, day_offset)
         except KeyError:
             print(f"\033[31mUnknown command: {command}\033[0m")
-            command_class = registry.get_command('help')
+            command_instance = registry.get_command('help')
 
-        command_instance = command_class(argv, day_offset)
         command_instance.run()
     except KeyboardInterrupt:
         print()

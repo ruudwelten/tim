@@ -2,8 +2,11 @@ from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
 
 
+@CommandRegistry.register('help')
 class HelpCommand(AbstractCommand):
-    """Print instructions for Tim."""
+    """Print instructions for Tim"""
+
+    help_text = 'Show this help text'
 
     def run(self) -> None:
         self.print_ascii()

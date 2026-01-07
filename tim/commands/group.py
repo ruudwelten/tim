@@ -1,13 +1,16 @@
-from datetime import datetime
 import re
+from datetime import datetime
+
 from tabulate import tabulate
 
 from tim.commands import AbstractCommand
-from tim.print import print_heading, print_log, colorize, YELLOW
+from tim.commands.registry import CommandRegistry
+from tim.print import YELLOW, colorize, print_heading, print_log
 
 
+@CommandRegistry.register('group')
 class GroupCommand(AbstractCommand):
-    """Group tracked timestamps under the same title."""
+    """Group timestamps under the same title"""
 
     def run(self) -> None:
         while True:
@@ -28,7 +31,7 @@ class GroupCommand(AbstractCommand):
             ]
 
             action = input(colorize('\nEnter the indeces to group (or q to '
-                                     'quit): ', YELLOW))
+                                    'quit): ', YELLOW))
             action = action.lower()
 
             if action == 'q':

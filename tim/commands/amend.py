@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 from tim.print import print_heading, print_log
 
 
+@CommandRegistry.register('amend')
 class AmendCommand(AbstractCommand):
     """Rename the last timestamp"""
 

@@ -3,11 +3,13 @@ from datetime import datetime, timedelta
 from tabulate import SEPARATING_LINE, tabulate
 
 from tim.commands import AbstractCommand
+from tim.commands.registry import CommandRegistry
 from tim.print import colorize
 
 
+@CommandRegistry.register('tally')
 class TallyCommand(AbstractCommand):
-    """Tally your day's work grouped by title."""
+    """Show a day's time tally"""
 
     def run(self) -> None:
         if self.week_flag_is_set():
@@ -23,17 +25,18 @@ class TallyCommand(AbstractCommand):
     def tally_day(self) -> None:
         print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
 
-        timestamps = self.db.execute('''
-            SELECT t.timestamp, t.title, t.tally, p.color
-            FROM timestamps t
-            LEFT JOIN projects p
-                ON SUBSTR(t.title, 1, INSTR(t.title, ' ')-1) = p.code
-                    AND (t.timestamp >= p.start OR p.start IS NULL)
-                    AND (t.timestamp <= p.end OR p.end IS NULL)
-                    AND t.tally = 1
-            WHERE t.timestamp >= ? AND t.timestamp < ?
-            ORDER BY t.timestamp ASC;
-        ''',
+        timestamps = self.db.execute(
+            '''
+                SELECT t.timestamp, t.title, t.tally, p.color
+                FROM timestamps t
+                LEFT JOIN projects p
+                    ON SUBSTR(t.title, 1, INSTR(t.title, ' ')-1) = p.code
+                        AND (t.timestamp >= p.start OR p.start IS NULL)
+                        AND (t.timestamp <= p.end OR p.end IS NULL)
+                        AND t.tally = 1
+                WHERE t.timestamp >= ? AND t.timestamp < ?
+                ORDER BY t.timestamp ASC;
+            ''',
             (self.start, self.end),
         )
 

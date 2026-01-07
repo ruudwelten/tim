@@ -1,14 +1,20 @@
-from abc import ABC, abstractmethod
-from datetime import datetime, timedelta, UTC
-from pathlib import Path
 import shutil
+from abc import ABC, abstractmethod
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from typing import Optional
+
 import tomli
 
 from tim.db import DatabaseConnection
 
 
 class AbstractCommand(ABC):
-    def __init__(self, args, day_offset):
+    """Abstract command for all Tim commands."""
+
+    help_text: Optional[str] = None
+
+    def __init__(self, args: list = list(), day_offset: int = 0):
         self.args = args
         self.day_offset = day_offset
 

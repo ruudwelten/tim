@@ -1,16 +1,17 @@
 import argparse
 from datetime import datetime
-from tabulate import tabulate
 from typing import Optional
 
+from tabulate import tabulate
+
 from tim.commands import AbstractCommand
-from tim.print import (
-    gray, print_heading, print_success, colorize, COLORS, YELLOW
-)
+from tim.commands.registry import CommandRegistry
+from tim.print import COLORS, YELLOW, colorize, gray, print_heading, print_success
 
 
+@CommandRegistry.register('project')
 class ProjectCommand(AbstractCommand):
-    """Manage projects."""
+    """Manage projects"""
 
     def __init__(self, args, day_offset):
         super(ProjectCommand, self).__init__(args, day_offset)
@@ -18,25 +19,30 @@ class ProjectCommand(AbstractCommand):
         self.args = self.parser.parse_args(args)
 
     def setup_parser(self) -> argparse.ArgumentParser:
-        parser = argparse.ArgumentParser(
-            prog='tim project',
-            description='Manage projects')
-        subparsers = parser.add_subparsers(dest='action', help='Action to perform')
+        parser = argparse.ArgumentParser(prog='tim project',
+                                         description='Manage projects')
+        subparsers = parser.add_subparsers(dest='action',
+                                           help='Action to perform')
 
         # Add project
         subparsers.add_parser('new', help='Create a new project')
 
         # List projects
         list_parser = subparsers.add_parser('list', help='List all projects')
-        list_parser.add_argument('-a', '--all', action='store_true',
-                               help='Show all projects, including past and future ones')
+        list_parser.add_argument(
+            '-a',
+            '--all',
+            action='store_true',
+            help='Show all projects, including past and future ones'
+        )
 
         # Edit project
         edit_parser = subparsers.add_parser('edit', help='Edit a project')
         edit_parser.add_argument('code', help='Project code to edit')
 
         # Remove project
-        remove_parser = subparsers.add_parser('remove', help='Remove a project')
+        remove_parser = subparsers.add_parser('remove',
+                                              help='Remove a project')
         remove_parser.add_argument('code', help='Project code to remove')
 
         # Colors
@@ -106,7 +112,8 @@ class ProjectCommand(AbstractCommand):
                 color = int(color_input)
                 if color in COLORS:
                     break
-                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
+                print(gray(
+                    f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
             except ValueError:
                 print(gray("Please enter a valid number."))
 
@@ -174,9 +181,12 @@ class ProjectCommand(AbstractCommand):
         for project in projects:
             project_code = colorize(project[0], project[2])
             project_name = colorize(project[1], project[2])
-            start_date = datetime.fromtimestamp(project[3]).strftime('%Y-%m-%d') if project[3] else gray('---')
-            end_date = datetime.fromtimestamp(project[4]).strftime('%Y-%m-%d') if project[4] else gray('---')
-            formatted_projects.append((project_code, project_name, start_date, end_date))
+            start_date = datetime.fromtimestamp(project[3]).strftime(
+                '%Y-%m-%d') if project[3] else gray('---')
+            end_date = datetime.fromtimestamp(project[4]).strftime(
+                '%Y-%m-%d') if project[4] else gray('---')
+            formatted_projects.append(
+                (project_code, project_name, start_date, end_date))
 
         print_heading("All projects" if self.args.all else "Current projects")
         print(tabulate(formatted_projects,
@@ -202,8 +212,10 @@ class ProjectCommand(AbstractCommand):
         project = project[0]  # Get the first (and should be only) result
         current_name = project[1]
         current_color = project[2]
-        current_start = datetime.fromtimestamp(project[3]).strftime('%Y-%m-%d') if project[3] else None
-        current_end = datetime.fromtimestamp(project[4]).strftime('%Y-%m-%d') if project[4] else None
+        current_start = datetime.fromtimestamp(
+            project[3]).strftime('%Y-%m-%d') if project[3] else None
+        current_end = datetime.fromtimestamp(project[4]).strftime(
+            '%Y-%m-%d') if project[4] else None
 
         print_heading(f"Editing project {self.args.code}")
 
@@ -228,13 +240,15 @@ class ProjectCommand(AbstractCommand):
                 color = int(color_input)
                 if color in COLORS:
                     break
-                print(gray(f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
+                print(gray(
+                    f"Invalid color code. Please choose from: {', '.join(str(c) for c in COLORS.keys())}"))
             except ValueError:
                 print(gray("Please enter a valid number."))
 
         # Edit start date
         while True:
-            start = input(f"Start date (YYYY-MM-DD) [{current_start or gray('Not set')}]: ").strip()
+            start = input(
+                f"Start date (YYYY-MM-DD) [{current_start or gray('Not set')}]: ").strip()
             if not start:  # If empty, keep current start date
                 start_timestamp = project[3]
                 break
@@ -244,7 +258,8 @@ class ProjectCommand(AbstractCommand):
 
         # Edit end date
         while True:
-            end = input(f"End date (YYYY-MM-DD) [{current_end or gray('Not set')}]: ").strip()
+            end = input(
+                f"End date (YYYY-MM-DD) [{current_end or gray('Not set')}]: ").strip()
             if not end:  # If empty, keep current end date
                 end_timestamp = project[4]
                 break
@@ -260,7 +275,8 @@ class ProjectCommand(AbstractCommand):
         ''', [name, color, start_timestamp, end_timestamp, self.args.code])
         self.db.commit()
 
-        print_success(f'Project {name} ({self.args.code}) updated successfully')
+        print_success(
+            f'Project {name} ({self.args.code}) updated successfully')
 
     def remove_project(self) -> None:
         """Remove a project."""
@@ -302,7 +318,7 @@ class ProjectCommand(AbstractCommand):
             print(f"{code:2d}: {color_preview}")
 
     def save_project(self, code: str, name: str, color: int,
-                    start: Optional[int], end: Optional[int]) -> None:
+                     start: Optional[int], end: Optional[int]) -> None:
         """Save a new project to the database."""
         self.db.cursor.execute('''
             INSERT INTO projects (code, name, color, start, end)
