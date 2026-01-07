@@ -92,12 +92,13 @@ def print_log(timestamps: list[tuple[int, str, Optional[bool]]],
 
     print(tabulate(timestamps_print, headers=headers, showindex=print_index))
 
-    tallied_timestamps_present = False
-    for x in timestamps:
-        if x[2] == 0:
-            tallied_timestamps_present = True
-            break
-    if tallied_timestamps_present:
-        print(f'\n{gray("* Gray: Non tallied timestamps")}')
+    if len(timestamps[0]) > 2:
+        tallied_timestamps_present = False
+        for x in timestamps:
+            if x[2] == 0:
+                tallied_timestamps_present = True
+                break
+        if tallied_timestamps_present:
+            print(f'\n{gray("* Gray: Non tallied timestamps")}')
 
     print('')
