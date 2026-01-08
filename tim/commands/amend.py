@@ -2,7 +2,7 @@ from datetime import datetime
 
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
-from tim.print import print_heading, print_log
+from tim.print import YELLOW, colorize, print_heading, print_log
 
 
 @CommandRegistry.register('amend')
@@ -20,7 +20,7 @@ class AmendCommand(AbstractCommand):
             print_log([timestamp])
 
             title = input(
-                "\n\033[33mEnter a new title for this stamp: \033[0m")
+                colorize("\nEnter a new title for this stamp: ", YELLOW))
 
             query = "UPDATE timestamps SET title = ? WHERE timestamp = ?;"
             self.db.execute(query, (title, timestamp[0]))

@@ -8,6 +8,7 @@ from tabulate import tabulate
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
+from tim.print import YELLOW, colorize
 
 
 @CommandRegistry.register('toggle')
@@ -20,7 +21,7 @@ class ToggleCommand(AbstractCommand):
         cursor = conn.cursor()
 
         while True:
-            print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
+            print('\n' + colorize(self.printed_day, YELLOW) + '\n')
 
             timestamps = cursor.execute(
                 'SELECT timestamp, title, tally FROM timestamps '
@@ -43,8 +44,8 @@ class ToggleCommand(AbstractCommand):
                 for x in timestamps
             ]
 
-            action = input('\n\033[33mEnter the indeces to toggle if they are '
-                           'tallied (or q to quit): \033[0m')
+            action = input(colorize('\nEnter the indeces to toggle if they '
+                           'are tallied (or q to quit): ', YELLOW))
             action = action.lower()
 
             if action == 'q':

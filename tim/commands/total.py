@@ -5,6 +5,7 @@ from os import path
 from tim import TIM_DIR
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
+from tim.print import YELLOW, colorize
 
 
 @CommandRegistry.register('total')
@@ -16,7 +17,7 @@ class TotalCommand(AbstractCommand):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
-        print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
+        print('\n' + colorize(self.printed_day, YELLOW, True) + '\n')
 
         timestamps = cursor.execute(
             'SELECT timestamp, title, tally FROM timestamps '

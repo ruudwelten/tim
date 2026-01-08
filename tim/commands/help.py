@@ -1,5 +1,6 @@
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
+from tim.print import EBLUE, EBOLD, ECYAN, ERESET, EWHITE, EYELLOW
 
 
 @CommandRegistry.register('help')
@@ -11,10 +12,10 @@ class HelpCommand(AbstractCommand):
     def run(self) -> None:
         self.print_ascii()
 
-        print('\nUsage: \033[1m\033[33mtim.py \033[36m[command] \033[34m[-#] '
-              '\033[36m[options]\033[0m \n'
+        print(f'\nUsage: {EBOLD}{EYELLOW}tim.py {ECYAN}[command] {EBLUE}[-#] '
+              f'{ECYAN}[options]{ERESET} \n'
               '\n'
-              '\033[36mCommands:\033[0m')
+              f'{ECYAN}Commands:{ERESET}')
 
         registry = CommandRegistry()
         descriptions = registry.get_all_command_descriptions()
@@ -25,21 +26,17 @@ class HelpCommand(AbstractCommand):
         for command, description in descriptions.items():
             # Add padding to align descriptions
             padding = ' ' * (max_command_length - len(command))
-            print(f'  \033[1m{command}\033[0m{padding}    {description}')
+            print(f'  {EBOLD}{command}{ERESET}{padding}    {description}')
 
     def print_ascii(self) -> None:
-        bold = '\033[1m'
-        y = '\033[33m'
-        w = '\033[97m'
-        r = '\033[0m'
-        print(f"\n\n{bold}{w}"
-              f" .-') _          _   .-')\n"
-              f"(  OO) )        ( '.( OO )_\n"
-              f"/     '._ {y},-.{w}-') {y},--.   ,--.{w})\n"
-              f"{y}|{w}'--...__){y}|  |{w}OO){y}|   `."
-              f"'   |\n"
-              f"'--.  .--'|  |{w}  \\{y}|         |\n"
-              f"   |  |   |  |{w}(_/{y}|  |'.'|  |\n"
-              f"   |  |  {w},{y}|  |{w}_.'{y}|  |   |  |\n"
-              f"   |  | {w}(_{y}|  |   |  |   |  |\n"
-              f"   `--'   `--'   `--'   `--'{r}\n")
+        print(f"\n\n{EBOLD}{EWHITE}"
+              " .-') _          _   .-')\n"
+              "(  OO) )        ( '.( OO )_\n"
+              f"/     '._ {EYELLOW},-.{EWHITE}-') {EYELLOW},--.   ,--.{EWHITE})\n"
+              f"{EYELLOW}|{EWHITE}'--...__){EYELLOW}|  |{EWHITE}OO){EYELLOW}|   `."
+              "'   |\n"
+              f"'--.  .--'|  |{EWHITE}  \\{EYELLOW}|         |\n"
+              f"   |  |   |  |{EWHITE}(_/{EYELLOW}|  |'.'|  |\n"
+              f"   |  |  {EWHITE},{EYELLOW}|  |{EWHITE}_.'{EYELLOW}|  |   |  |\n"
+              f"   |  | {EWHITE}(_{EYELLOW}|  |   |  |   |  |\n"
+              f"   `--'   `--'   `--'   `--'{ERESET}\n")

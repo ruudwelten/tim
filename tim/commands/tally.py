@@ -4,7 +4,7 @@ from tabulate import SEPARATING_LINE, tabulate
 
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
-from tim.print import colorize
+from tim.print import YELLOW, colorize
 
 
 @CommandRegistry.register('tally')
@@ -23,7 +23,7 @@ class TallyCommand(AbstractCommand):
         return '-w' in self.args
 
     def tally_day(self) -> None:
-        print(f'\033[1m\n\033[33m{self.printed_day}\033[0m\n')
+        print("\n" + colorize(self.printed_day, YELLOW, True) + "\n")
 
         timestamps = self.db.execute(
             '''

@@ -3,7 +3,8 @@ from typing import Dict, Optional
 
 from tabulate import tabulate
 
-# ANSI color codes
+# ANSI Color Codes
+RESET = 0
 BOLD = 1
 BLACK = 30
 RED = 31
@@ -39,6 +40,27 @@ COLORS: Dict[int, str] = {
 }
 
 
+# ANSI Escape Codes
+ERESET = '\033[0m'
+EBOLD = '\033[1m'
+EBLACK = '\033[30m'
+ERED = '\033[31m'
+EGREEN = '\033[32m'
+EYELLOW = '\033[33m'
+EBLUE = '\033[34m'
+EMAGENTA = '\033[35m'
+ECYAN = '\033[36m'
+EWHITE = '\033[37m'
+EGRAY = '\033[90m'
+EBRIGHT_RED = '\033[91m'
+EBRIGHT_GREEN = '\033[92m'
+EBRIGHT_YELLOW = '\033[93m'
+EBRIGHT_BLUE = '\033[94m'
+EBRIGHT_MAGENTA = '\033[95m'
+EBRIGHT_CYAN = '\033[96m'
+EBRIGHT_WHITE = '\033[97m'
+
+
 def gray(text: str) -> str:
     return colorize(text, GRAY)
 
@@ -47,7 +69,7 @@ def colorize(text: str, color_code: int, bold: bool = False) -> str:
     codes = [color_code]
     if bold:
         codes.append(BOLD)
-    return f'\033[{";".join(str(c) for c in codes)}m{text}\033[0m'
+    return f'\033[{";".join(str(c) for c in codes)}m{text}{ERESET}'
 
 
 def timestamp_to_time(timestamp: int) -> str:
@@ -71,11 +93,11 @@ def print_log(timestamps: list[tuple[int, str, Optional[bool]]],
     if len(timestamps) == 0:
         print('Oh no! Your log for this day looks empty ...\n'
               '\n'
-              '\033[90m¯\\_(ツ)_/¯\033[0m\n'
+              f'{EGRAY}¯\\_(ツ)_/¯{ERESET}\n'
               '\n'
               'To create a new timestamp run the following command:\n'
               '\n'
-              '$ \033[1m\033[96mtim.py new [title]\033[0m')
+              f'$ {EBOLD}{EBRIGHT_CYAN}tim.py new [title]{ERESET}')
         return
 
     headers = ['Time', 'Title']

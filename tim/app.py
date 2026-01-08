@@ -16,6 +16,7 @@ from tim.commands import (  # noqa: F401
     total,
 )
 from tim.commands.registry import CommandRegistry
+from tim.print import RED, colorize
 
 
 def main() -> None:
@@ -33,7 +34,7 @@ def main() -> None:
             command_instance = registry.get_command(command or 'help',
                                                     argv, day_offset)
         except KeyError:
-            print(f"\033[31mUnknown command: {command}\033[0m")
+            print(colorize(f"\nUnknown command: {command}", RED, True))
             command_instance = registry.get_command('help')
 
         command_instance.run()
