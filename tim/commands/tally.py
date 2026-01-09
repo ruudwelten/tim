@@ -82,17 +82,20 @@ class TallyCommand(AbstractCommand):
         for index in duplicate_timestamps_to_remove:
             del timestamps[index]
 
-        timestamps_print = [((colorize(x[1].split(' ')[0], x[3]) +
-                              ' ' + ' '.join(x[1].split(' ')[1:])
-                              if x[3] is not None else x[1]),
-                             self.seconds_to_time(x[4]) +
-                             (' (ongoing)'
-                              if ongoing and x[1] == latest_timestamp[1]
-                              else ''))
-                            for x in timestamps]
+        timestamps_print: list[tuple[str, str] | str] = [
+            (
+                (colorize(x[1].split(' ')[0], x[3]) + ' ' +
+                 ' '.join(x[1].split(' ')[1:])
+                 if x[3] is not None else x[1]
+                 ),
+                self.seconds_to_time(x[4]) +
+                (' (ongoing)'
+                    if ongoing and x[1] == latest_timestamp[1]
+                    else '')
+            ) for x in timestamps
+        ]
         timestamps_print.append(SEPARATING_LINE)
-        timestamps_print.append(tuple(['Total',
-                                       self.seconds_to_time(total_time)]))
+        timestamps_print.append(('Total', self.seconds_to_time(total_time)))
 
         print(tabulate(timestamps_print,
                        headers=['Title', 'Duration'],
