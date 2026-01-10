@@ -14,7 +14,7 @@ class ProjectCommand(AbstractCommand):
     """Manage projects"""
 
     def __init__(self, args, day_offset):
-        super(ProjectCommand, self).__init__(args, day_offset)
+        super().__init__(args=args, day_offset=day_offset)
         self.parser = self.setup_parser()
         self.args = self.parser.parse_args(args)
 
