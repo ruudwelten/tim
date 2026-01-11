@@ -6,7 +6,7 @@ from tabulate import tabulate
 
 from tim.commands import AbstractCommand
 from tim.commands.registry import CommandRegistry
-from tim.print import COLORS, YELLOW, colorize, gray, print_heading, print_success
+from tim.print import COLORS, YELLOW, colorize, gray, print_heading, print_log, print_success
 
 
 @CommandRegistry.register('project')
@@ -37,13 +37,18 @@ class ProjectCommand(AbstractCommand):
         )
 
         # Edit project
-        edit_parser = subparsers.add_parser('edit', help='Edit a project')
+        edit_parser = subparsers.add_parser('edit', help='Edit project')
         edit_parser.add_argument('code', help='Project code to edit')
 
         # Remove project
         remove_parser = subparsers.add_parser('remove',
-                                              help='Remove a project')
+                                              help='Remove project')
         remove_parser.add_argument('code', help='Project code to remove')
+
+        # Show project
+        show_parser = subparsers.add_parser('show',
+                                            help='Show project overview')
+        show_parser.add_argument('code', help='Project code to show')
 
         # Colors
         subparsers.add_parser('colors', help='Show available colors')
@@ -63,6 +68,8 @@ class ProjectCommand(AbstractCommand):
             self.edit_project()
         elif self.args.action == 'remove':
             self.remove_project()
+        elif self.args.action == 'show':
+            self.show_project()
         elif self.args.action == 'colors':
             self.show_colors()
 
@@ -316,6 +323,55 @@ class ProjectCommand(AbstractCommand):
         for code, name in COLORS.items():
             color_preview = colorize(name, code)
             print(f"{code:2d}: {color_preview}")
+
+    def show_project(self) -> None:
+        """Show project overview."""
+        # First check if project exists
+        project = self.db.cursor.execute('''
+            SELECT code, name, color, start, end
+            FROM projects
+            WHERE code = ?
+        ''', [self.args.code]).fetchall()
+
+        if not project:
+            print(gray(f"Project {self.args.code} not found."))
+            return
+
+        project = project[0]  # Get the first (and should be only) result
+        (code, name, color, raw_start, raw_end) = project
+        start = datetime.fromtimestamp(raw_start).strftime('%Y-%m-%d') \
+            if raw_start else None
+        end = datetime.fromtimestamp(raw_end).strftime('%Y-%m-%d') \
+            if raw_end else None
+
+        print_heading(colorize(f"{name} ({code})", color))
+        if start and end:
+            print(f"{start} - {end}\n")
+        elif start or end:
+            print(f"Start: {start}" if start else f"End: {end}\n")
+
+        # Get timestamps
+        start_ts = int(datetime.strptime(
+            start, '%Y-%m-%d').timestamp()) if start else None
+        end_ts = int(datetime.strptime(end, '%Y-%m-%d').timestamp()
+                     ) + 86400 if end else None  # End of day
+        timestamps = self.db.cursor.execute(f'''
+            SELECT timestamp, title, tally
+            FROM timestamps
+            WHERE
+                title LIKE ?
+                {f'AND timestamp >= {start_ts}' if start else ''}
+                {f'AND timestamp <= {end_ts}' if end else ''}
+        ''', [f'{code} %']).fetchall()
+
+        timestamps_print = [(
+            x[0],
+            (colorize(x[1].split(' ')[0], color) + ' ' +
+             ' '.join(x[1].split(' ')[1:]) if color is not None else x[1]),
+            x[2]
+        ) for x in timestamps]
+
+        print_log(timestamps_print)
 
     def save_project(self, code: str, name: str, color: int,
                      start: Optional[int], end: Optional[int]) -> None:

@@ -122,5 +122,7 @@ title with a project code to link it to that project (e.g.,
     group in tally's, maybe even color code timestamps based on project
     e.g., `tim new ABC Started project` links "Started project" timestamp to the
     ABC project.
-  - View project overview
+  - Expand on project overview: Currently only shows log of all timestamps. This
+    needs to change to show a total tally and the worked days. Possibly add a
+    terminal scroll function exitable with 'q'
   - Link timestamps to project manually
